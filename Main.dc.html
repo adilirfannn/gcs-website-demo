@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>GCS Homepage</title>
+<style>x-dc{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-dc-tpl="1"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" data-dc-tpl="2"><link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" data-dc-tpl="3"><style data-dc-tpl="4">
+body{margin:0;background:#07160e}
+a{color:#016332;text-decoration:none}a:hover{color:#014a26}
+
+/* Hero slideshow: three photos crossfade with a slow zoom, the stage floats */
+.gcs-stage{animation:gcsFloat 7s ease-in-out infinite}
+.gcs-slide{opacity:0;animation:gcsSlide 15s infinite}
+.gcs-slide.s2{animation-delay:5s}
+.gcs-slide.s3{animation-delay:10s}
+.gcs-cap{opacity:0;animation:gcsCap 15s infinite}
+.gcs-cap.s2{animation-delay:5s}
+.gcs-cap.s3{animation-delay:10s}
+.gcs-bar{animation:gcsBar 5s linear infinite}
+@keyframes gcsSlide{0%{opacity:0;transform:scale(1.08) translateX(30px)}6%{opacity:1}30%{opacity:1;transform:scale(1) translateX(0)}36%{opacity:0;transform:scale(.98) translateX(-20px)}100%{opacity:0}}
+@keyframes gcsCap{0%{opacity:0;transform:translateY(10px)}6%{opacity:1;transform:none}30%{opacity:1}34%{opacity:0}100%{opacity:0}}
+@keyframes gcsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes gcsBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes gcsGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.85;transform:scale(1.06)}}
+.gcs-glow{animation:gcsGlow 8s ease-in-out infinite}
+
+/* Page-load entrance */
+.gcs-rise{animation:gcsRise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.15s}.d2{animation-delay:.3s}.d3{animation-delay:.45s}.d4{animation-delay:.6s}
+@keyframes gcsRise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
+
+/* Scroll reveal where the browser supports scroll-driven animation */
+@supports (animation-timeline: view()){
+  .gcs-reveal{animation:gcsRise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+}
+
+/* Logo marquee */
+.gcs-marquee{animation:gcsMarquee 34s linear infinite}
+.gcs-marquee-wrap:hover .gcs-marquee{animation-play-state:paused}
+@keyframes gcsMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* Scroll cue */
+.gcs-cue{animation:gcsCue 2s ease-in-out infinite}
+@keyframes gcsCue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(14px);opacity:0}100%{opacity:0}}
+
+/* Hover states */
+.gcs-lift{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s}
+.gcs-lift:hover{transform:translateY(-8px);box-shadow:0 24px 50px rgba(7,22,14,.18)}
+.gcs-zoom img{transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.gcs-zoom:hover img{transform:scale(1.07)}
+.gcs-arrow{transition:transform .3s}
+a:hover .gcs-arrow{transform:translateX(6px)}
+.gcs-btn{transition:background .25s,color .25s,transform .25s}
+.gcs-btn:hover{transform:translateY(-2px)}
+
+@media (prefers-reduced-motion: reduce){
+  .gcs-stage,.gcs-glow,.gcs-marquee,.gcs-cue,.gcs-bar{animation:none}
+  .gcs-slide,.gcs-cap{animation:none;opacity:0}
+  .gcs-slide.s1,.gcs-cap.s1{opacity:1}
+  .gcs-rise,.gcs-reveal{animation:none}
+}
+
+/* Type: Inter for reading, Urbanist for display */
+h1,h2,h3{font-family:Urbanist,Inter,sans-serif;font-stretch:100%;font-weight:800;letter-spacing:-0.025em !important}
+strong[style*="letter-spacing: -0.04em"],strong[style*="letter-spacing: -0.05em"],strong[style*="font-size: 3"],strong[style*="font-size: 6"],strong[style*="font-size: 7"]{font-family:Urbanist,Inter,sans-serif;font-stretch:100%}
+span[style*="letter-spacing: 0.01em"]{font-family:Urbanist,Inter,sans-serif;font-stretch:100%}
+/* Hero product: gentle float and soft floor shadow */
+.gcs-float{animation:gcsFloat 7s ease-in-out infinite}
+.gcs-shadow{animation:gcsShadow 7s ease-in-out infinite}
+@keyframes gcsShadow{0%,100%{transform:scaleX(1);opacity:.55}50%{transform:scaleX(.86);opacity:.35}}
+@media (prefers-reduced-motion: reduce){.gcs-float,.gcs-shadow{animation:none}}
+
+/* Brand name */
+.gcs-brand{font-family:Urbanist,Inter,sans-serif;font-stretch:100%;font-weight:800;letter-spacing:0.07em}
+/* Cursor-following levitation */
+.gcs-tilt{transition:transform .35s cubic-bezier(.2,.7,.2,1);will-change:transform;transform-style:preserve-3d}
+
+/* Phones */
+@media (max-width: 720px){
+  header > div{padding:16px 20px !important;gap:12px !important}
+  header nav{width:100%;flex-wrap:nowrap !important;overflow-x:auto;gap:6px 18px !important;padding-bottom:6px;font-size:12px !important}
+  header nav a{flex:none;white-space:nowrap}
+  header form[role="search"]{flex:1 1 100% !important}
+  section > div[style*="max-width: 1360px"], footer > div[style*="max-width: 1360px"], section[style*="max-width: 1360px"]{padding-left:20px !important;padding-right:20px !important}
+  section > div[style*="padding: 100px 40px"], section > div[style*="padding: 96px 40px"], section > div[style*="padding: 110px 40px"], section > div[style*="padding: 120px 40px"], section > div[style*="padding: 140px 40px"], section > div[style*="padding: 72px 40px"]{padding-top:64px !important;padding-bottom:64px !important}
+  h1[style*="font-size: 5"], h1[style*="font-size: 6"], h1[style*="font-size: 7"]{font-size:42px !important;line-height:1.04 !important}
+  h2[style*="font-size: 4"], h2[style*="font-size: 5"], h2[style*="font-size: 6"], h2[style*="font-size: 7"]{font-size:32px !important;line-height:1.08 !important}
+  strong[style*="font-size: 6"], strong[style*="font-size: 7"]{font-size:44px !important}
+  div[aria-hidden="true"][style*="white-space: nowrap"], strong[aria-hidden="true"]{font-size:110px !important}
+  section[style*="min-height"]{min-height:0 !important}
+  div[style*="flex: 1 1 460px"]{height:340px !important}
+  .gcs-float img{height:240px !important}
+  div[style*="padding: 44px; border-radius: 28px"], div[style*="padding: 40px; border-radius: 28px"]{padding:24px !important}
+  [style*="grid-template-columns: repeat(2, minmax(0, 1fr))"], [style*="grid-template-columns: repeat(3, minmax(0, 1fr))"]{grid-template-columns:1fr !important}
+  a[style*="height: 520px"]{height:400px !important}
+}
+/* Hero parallax: as the page scrolls, the printer drifts down and shrinks slightly while the glow moves at a different speed */
+@supports (animation-timeline: scroll()){
+  @keyframes gcsPxImg{from{translate:0 0;scale:1}to{translate:0 150px;scale:.9}}
+  @keyframes gcsPxGlow{from{translate:0 0}to{translate:0 260px}}
+  .gcs-float{animation:gcsFloat 7s ease-in-out infinite,gcsPxImg linear both;animation-timeline:auto,scroll(root);animation-range:normal,0px 760px}
+  .gcs-glow{animation:gcsGlow 8s ease-in-out infinite,gcsPxGlow linear both;animation-timeline:auto,scroll(root);animation-range:normal,0px 760px}
+  /* Phones: the printer sits lower on the screen, so instead of drifting it rises gently into place as it scrolls into view */
+  @keyframes gcsPxPhone{from{translate:0 40px;scale:.9}to{translate:0 0;scale:1}}
+  @media (max-width: 720px){
+    .gcs-float{animation:gcsFloat 7s ease-in-out infinite,gcsPxPhone linear both;animation-timeline:auto,scroll(root);animation-range:normal,0px 450px}
+    .gcs-glow{animation:gcsGlow 8s ease-in-out infinite;translate:none}
+  }
+}
+@media (prefers-reduced-motion: reduce){.gcs-float,.gcs-glow{animation:none !important;translate:none !important;scale:none !important}}
+/* Phones: show "Shop online" first in the menu so it is visible without scrolling the menu */
+@media (max-width: 720px){
+  header nav a.gcs-btn[href="Main.dc.html"]{order:-1;height:34px !important;padding:0 14px !important;font-size:12px !important;flex:none}
+}
+/* Phone compaction: two cards per row, shorter images, tighter spacing */
+@media (max-width: 720px){
+  [style*="minmax(min(150px, 100%)"],[style*="minmax(min(220px, 100%)"],[style*="minmax(min(240px, 100%)"],[style*="minmax(min(250px, 100%)"],[style*="minmax(min(260px, 100%)"],[style*="minmax(min(280px, 100%)"],[style*="minmax(min(290px, 100%)"],[style*="minmax(min(300px, 100%)"],.gcs-clients10{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
+  [style*="minmax(min(240px, 100%)"] > *,[style*="minmax(min(250px, 100%)"] > *,[style*="minmax(min(260px, 100%)"] > *,[style*="minmax(min(280px, 100%)"] > *,[style*="minmax(min(290px, 100%)"] > *,[style*="minmax(min(300px, 100%)"] > *,.gcs-clients10 > *{padding-left:14px !important;padding-right:14px !important;border-radius:18px !important}
+  [style*="minmax(min(2"] h3,[style*="minmax(min(300px"] h3{font-size:16px !important;line-height:1.25 !important}
+  [style*="minmax(min(2"] p,[style*="minmax(min(300px"] p{font-size:13px !important;line-height:1.45 !important}
+  [style*="minmax(min(2"] strong[style*="font-size: 4"],[style*="minmax(min(2"] strong[style*="font-size: 5"],[style*="minmax(min(2"] strong[style*="font-size: 6"]{font-size:30px !important}
+  [style*="height: 340px"],[style*="height: 260px"],[style*="height: 250px"],[style*="height: 210px"],[style*="height: 170px"],[style*="height: 160px"]{height:118px !important}
+  [style*="height: 170px"] img,[style*="height: 160px"] img{max-height:48px !important}
+  a[style*="height: 520px"]{height:300px !important}
+  a[style*="height: 520px"] > span[style*="width: 200px; height: 200px"]{width:84px !important;height:84px !important;top:16px !important;right:16px !important;border-radius:16px !important;padding:8px !important;box-sizing:border-box}
+  a[style*="height: 520px"] > span[style*="width: 200px; height: 200px"] img{max-width:100% !important;max-height:100% !important}
+  a[style*="height: 520px"] > span[style*="bottom: 0"]{padding:20px !important}
+  a[style*="height: 520px"] strong{font-size:24px !important}
+  a[style*="height: 520px"] img[style*="padding: 40px 40px 140px"]{padding:16px 16px 110px !important}
+  [style*="minmax(min(2"] [style*="padding: 2"]:not([style*="padding: 2px"]),[style*="minmax(min(2"] [style*="padding: 3"]:not([style*="padding: 3px"]),[style*="minmax(min(300px"] [style*="padding: 2"]:not([style*="padding: 2px"]),[style*="minmax(min(300px"] [style*="padding: 3"]:not([style*="padding: 3px"]){padding:14px !important}
+  aside[aria-label="Filters"]{gap:14px !important}
+  aside[aria-label="Filters"] h2{font-size:13px !important;margin-bottom:6px !important}
+  aside[aria-label="Filters"] > div > div{flex-direction:row !important;flex-wrap:nowrap !important;overflow-x:auto;gap:6px !important;padding-bottom:4px;scrollbar-width:none}
+  aside[aria-label="Filters"] > div > div button{flex:none !important;white-space:nowrap;gap:8px;min-height:40px !important}
+  [style*="minmax(min(2"] strong[style*="font-size: 2"],[style*="minmax(min(300px"] strong[style*="font-size: 2"],[style*="minmax(min(2"] span[style*="font-size: 20px"],[style*="minmax(min(300px"] span[style*="font-size: 20px"],[style*="minmax(min(2"] span[style*="font-size: 18px"]{font-size:16px !important}
+  [style*="justify-content: space-between; align-items: center; margin-top: 10px"]{flex-direction:column !important;align-items:flex-start !important;gap:4px !important}
+  img[style*="height: 180px; object-fit: contain"]{height:110px !important}
+  div[style*="padding: 40px; border-radius: 28px; background: #ffffff"]{padding:18px !important}
+  footer > div[style*="padding: 72px 40px 40px"] > div:first-child{grid-column:1 / -1}
+  div[style*="flex: 1 1 460px"]{height:250px !important}
+  .gcs-float img{height:190px !important}
+  .gcs-cue,div[aria-hidden="true"][style*="left: 50%; bottom: 28px"]{display:none !important}
+  div[aria-hidden="true"][style*="white-space: nowrap"],strong[aria-hidden="true"]{display:none !important}
+  section > div[style*="padding: 100px 40px"],section > div[style*="padding: 96px 40px"],section > div[style*="padding: 110px 40px"],section > div[style*="padding: 120px 40px"],section > div[style*="padding: 140px 40px"],section > div[style*="padding: 72px 40px"],section[style*="padding: 96px 40px"]{padding-top:40px !important;padding-bottom:40px !important}
+  h2[style*="font-size: 4"],h2[style*="font-size: 5"],h2[style*="font-size: 6"],h2[style*="font-size: 7"]{font-size:28px !important}
+  [style*="margin-top: 48px"]{margin-top:22px !important}
+  footer > div[style*="padding: 72px 40px 40px"]{padding-top:40px !important;gap:24px !important}
+}
+/* Very large screens */
+@media (min-width: 1800px){
+  [style*="max-width: 1360px"]{max-width:1560px !important}
+}
+
+/* Floating WhatsApp button */
+.gcs-wa{position:fixed;right:24px;bottom:24px;z-index:50;display:flex;align-items:center;gap:12px;text-decoration:none}
+.gcs-wa-btn{flex:none;width:58px;height:58px;border-radius:18px;background:#21c063;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(33,192,99,.32),0 2px 6px rgba(7,22,14,.18);transition:transform .25s cubic-bezier(.2,.7,.2,1),background .25s,box-shadow .25s}
+.gcs-wa:hover .gcs-wa-btn{transform:translateY(-3px);background:#1cab57;box-shadow:0 14px 30px rgba(33,192,99,.4),0 3px 8px rgba(7,22,14,.2)}
+.gcs-wa:focus-visible{outline:none}.gcs-wa:focus-visible .gcs-wa-btn{box-shadow:0 0 0 3px #ffffff,0 0 0 6px #21c063}
+.gcs-wa-label{display:flex;flex-direction:column;gap:2px;padding:9px 14px;border-radius:12px;background:#ffffff;border:1px solid #e3ebe0;box-shadow:0 8px 22px rgba(7,22,14,.14);font-family:Inter,system-ui,sans-serif;white-space:nowrap;opacity:0;transform:translateX(8px);transition:opacity .25s,transform .25s;pointer-events:none}
+.gcs-wa:hover .gcs-wa-label,.gcs-wa:focus-visible .gcs-wa-label{opacity:1;transform:none}
+.gcs-wa-label strong{font-size:14px;font-weight:700;color:#07160e;line-height:1.2}
+.gcs-wa-label span{display:flex;align-items:center;gap:6px;font-size:12px;color:#5d6b62;line-height:1.2}
+.gcs-wa-label span::before{content:"";width:7px;height:7px;border-radius:50%;background:#21c063}
+@media (max-width: 720px){.gcs-wa{right:16px;bottom:16px}.gcs-wa-label{display:none}.gcs-wa-btn{width:54px;height:54px;border-radius:16px}}
+@media (hover: none){.gcs-wa-label{display:none}}
+@media (prefers-reduced-motion: reduce){.gcs-wa-btn,.gcs-wa-label{transition:none}}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="Main"><div data-dc-tpl="5" style="font-family: Inter, system-ui, sans-serif; color: rgb(19, 36, 26); background: rgb(255, 255, 255); overflow: hidden;">
+
+  
+  <header data-dc-tpl="6" style="position: relative; z-index: 3; background: rgb(7, 22, 14); color: rgb(255, 255, 255);">
+    <div data-dc-tpl="7" style="max-width: 1360px; margin: 0px auto; padding: 22px 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 30px;">
+      <a data-dc-tpl="8" href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; color: rgb(255, 255, 255);">
+        <img data-dc-tpl="9" src="images/bfb307b4998742d2dac945e0ab66a954.svg" alt="GCS logo" style="width: 56px; height: 56px; filter: drop-shadow(rgba(138, 190, 124, 0.35) 0px 4px 14px);">
+        <span data-dc-tpl="10" style="display: flex; flex-direction: column; line-height: 1.15;">
+          <span data-dc-tpl="11" style="font-weight: 800; font-size: 17px; letter-spacing: 0.01em;">GCS SHOP</span>
+          <span data-dc-tpl="12" style="font-family: Inter, system-ui, sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 0.02em; color: rgba(255, 255, 255, 0.55); margin-top: 3px;">Copiers, scanners and printers</span>
+        </span>
+      </a>
+      <nav data-dc-tpl="13" aria-label="Shop" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; font-weight: 600; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; flex: 1 1 auto;">
+        <a data-dc-tpl="14" href="Site-Home.dc.html" style="color: rgb(138, 190, 124);">← GCS website</a>
+        <a data-dc-tpl="15" href="Catalog-Copiers.dc.html" style="color: rgb(255, 255, 255);">Photocopiers</a>
+        <a data-dc-tpl="16" href="Catalog-Scanners.dc.html" style="color: rgb(255, 255, 255);">Scanners</a>
+        <a data-dc-tpl="17" href="Catalog-Printers.dc.html" style="color: rgb(255, 255, 255);">Printers</a>
+        <a data-dc-tpl="18" href="Catalog.dc.html" style="color: rgb(255, 255, 255);">All products</a>
+        <a data-dc-tpl="19" href="#quote" style="color: rgb(255, 255, 255);">Business quote</a>
+      </nav>
+      <form data-dc-tpl="20" role="search" style="display: flex; flex: 0 1 300px; min-width: 200px; height: 46px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); overflow: hidden;">
+        <label data-dc-tpl="21" for="home-search" class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px);">Search products</label>
+        <input data-dc-tpl="22" id="home-search" type="search" placeholder="Search model, e.g. C5535i" style="flex: 1 1 0%; min-width: 0px; padding: 0px 18px; border: 0px; background: transparent; color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 14px;">
+        <button data-dc-tpl="23" type="submit" style="padding: 0px 18px; border: 0px; background: rgb(138, 190, 124); color: rgb(7, 22, 14); font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 800; cursor: pointer;">Search</button>
+      </form>
+      <a data-dc-tpl="24" href="Cart.dc.html" class="gcs-btn" style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0px 18px; border-radius: 999px; background: rgb(255, 255, 255); color: rgb(7, 22, 14); font-weight: 800;">
+        <svg data-dc-tpl="25" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path data-dc-tpl="26" d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6"></path><circle data-dc-tpl="27" cx="10" cy="20" r="1.5"></circle><circle data-dc-tpl="28" cx="18" cy="20" r="1.5"></circle></svg>
+        Cart
+        <span data-dc-tpl="29" style="background: rgb(1, 99, 50); color: rgb(255, 255, 255); border-radius: 999px; min-width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px;">2</span>
+      </a>
+    </div>
+  </header>
+
+
+  
+  <section data-dc-tpl="30" style="position: relative; background: linear-gradient(120deg, rgb(5, 17, 11) 0%, rgb(10, 46, 27) 48%, rgb(15, 90, 48) 100%); color: rgb(255, 255, 255); overflow: hidden;">
+    <div data-dc-tpl="31" aria-hidden="true" style="position: absolute; left: -20px; bottom: -64px; font-size: 280px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: rgba(138, 190, 124, 0.063); white-space: nowrap;">SHOP</div>
+    <div data-dc-tpl="32" style="position: relative; max-width: 1360px; margin: 0px auto; padding: 40px 40px 100px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px;">
+      <div data-dc-tpl="33" style="flex: 1 1 520px; min-width: 0px; max-width: 640px;">
+        <p data-dc-tpl="34" class="gcs-rise" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(138, 190, 124);">The GCS online shop · Prices in PKR</p>
+        <h1 data-dc-tpl="35" class="gcs-rise d1" style="margin: 18px 0px 0px; font-size: 68px; line-height: 1; font-weight: 800;">Office machines.<br data-dc-tpl="36"><span data-dc-tpl="37" style="color: rgb(138, 190, 124);">Delivered. Installed.</span></h1>
+        <p data-dc-tpl="38" class="gcs-rise d2" style="margin: 22px 0px 0px; font-size: 18px; line-height: 1.65; color: rgb(215, 230, 210);">Canon, Kyocera, Konica Minolta and HP copiers and scanners at clear prices in PKR, with Cash on Delivery and installation by our own technicians.</p>
+        <div data-dc-tpl="39" class="gcs-rise d3" style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px;">
+          <a data-dc-tpl="40" href="Catalog.dc.html" class="gcs-btn" style="display: inline-flex; align-items: center; gap: 10px; height: 56px; padding: 0px 30px; border-radius: 999px; background: rgb(138, 190, 124); color: rgb(5, 17, 11); font-weight: 800;">Shop all 26 products <span data-dc-tpl="41" class="gcs-arrow" aria-hidden="true">→</span></a>
+          <a data-dc-tpl="42" href="#quote" class="gcs-btn" style="display: inline-flex; align-items: center; height: 56px; padding: 0px 30px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.55); color: rgb(255, 255, 255); font-weight: 700; box-sizing: border-box;">Business quote</a>
+        </div>
+      </div>
+      <div data-dc-tpl="43" class="gcs-rise d2" style="flex: 1 1 460px; min-width: 0px; position: relative; height: 520px; display: flex; align-items: flex-end; justify-content: center;">
+        <div data-dc-tpl="44" aria-hidden="true" class="gcs-glow" style="position: absolute; left: 50%; top: 46%; width: 550px; height: 550px; margin: -275px 0px 0px -275px; border-radius: 50%; background: radial-gradient(closest-side, rgba(138, 190, 124, 0.38), rgba(138, 190, 124, 0));"></div>
+        <div data-dc-tpl="45" aria-hidden="true" class="gcs-shadow" style="position: absolute; left: 14%; right: 14%; bottom: 46px; height: 40px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));"></div>
+        <div data-dc-tpl="46" class="gcs-float" style="position: relative; margin-bottom: 60px;"><div data-dc-tpl="47" class="gcs-tilt" style="transform: perspective(1400px) translate3d(0px, 0px, 0px) rotateY(0deg) rotateX(0deg);"><img data-dc-tpl="48" src="images/a6ee482cce2a6a34c500c5cd25177d3f.webp" alt="Konica Minolta bizhub 5021i multifunction printer" style="display: block; max-width: 100%; height: 460px; object-fit: contain; filter: drop-shadow(rgba(0, 0, 0, 0.45) 0px 30px 40px);"></div></div>
+        <div data-dc-tpl="49" class="gcs-rise d4" style="position: absolute; right: 10px; bottom: 0px; padding: 16px 20px; border-radius: 18px; background: rgba(5, 17, 11, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); backdrop-filter: blur(14px);">
+          <span data-dc-tpl="50" style="display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(138, 190, 124);">Photocopiers</span>
+          <strong data-dc-tpl="51" style="display: block; margin-top: 4px; font-size: 16px;">From Rs 30,000</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="52" style="background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 235, 224);">
+    <div data-dc-tpl="53" style="max-width: 1360px; margin: 0px auto; padding: 34px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 28px;">
+      
+        <div data-dc-tpl="55" class="gcs-reveal" style="display: flex; gap: 16px; align-items: center;">
+          <span data-dc-tpl="56" style="flex: 0 0 auto; width: 52px; height: 52px; border-radius: 16px; background: rgb(7, 22, 14); display: flex; align-items: center; justify-content: center;">
+            <svg data-dc-tpl="57" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8abe7c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="58" d="M5 12l5 5L20 7"></path></svg>
+          </span>
+          <span data-dc-tpl="59" style="display: flex; flex-direction: column; gap: 3px;">
+            <strong data-dc-tpl="60" style="font-size: 16px; color: rgb(7, 22, 14);"><span class="sc-interp">Genuine machines</span></strong>
+            <span data-dc-tpl="61" style="font-size: 14px; color: rgb(93, 107, 98);"><span class="sc-interp">Canon, Kyocera, Konica Minolta and HP</span></span>
+          </span>
+        </div>
+      
+        <div data-dc-tpl="55" class="gcs-reveal" style="display: flex; gap: 16px; align-items: center;">
+          <span data-dc-tpl="56" style="flex: 0 0 auto; width: 52px; height: 52px; border-radius: 16px; background: rgb(7, 22, 14); display: flex; align-items: center; justify-content: center;">
+            <svg data-dc-tpl="57" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8abe7c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="58" d="M5 12l5 5L20 7"></path></svg>
+          </span>
+          <span data-dc-tpl="59" style="display: flex; flex-direction: column; gap: 3px;">
+            <strong data-dc-tpl="60" style="font-size: 16px; color: rgb(7, 22, 14);"><span class="sc-interp">Cash on Delivery</span></strong>
+            <span data-dc-tpl="61" style="font-size: 14px; color: rgb(93, 107, 98);"><span class="sc-interp">Or bank transfer and corporate invoice</span></span>
+          </span>
+        </div>
+      
+        <div data-dc-tpl="55" class="gcs-reveal" style="display: flex; gap: 16px; align-items: center;">
+          <span data-dc-tpl="56" style="flex: 0 0 auto; width: 52px; height: 52px; border-radius: 16px; background: rgb(7, 22, 14); display: flex; align-items: center; justify-content: center;">
+            <svg data-dc-tpl="57" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8abe7c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="58" d="M5 12l5 5L20 7"></path></svg>
+          </span>
+          <span data-dc-tpl="59" style="display: flex; flex-direction: column; gap: 3px;">
+            <strong data-dc-tpl="60" style="font-size: 16px; color: rgb(7, 22, 14);"><span class="sc-interp">Installed for you</span></strong>
+            <span data-dc-tpl="61" style="font-size: 14px; color: rgb(93, 107, 98);"><span class="sc-interp">Copiers set up by GCS technicians</span></span>
+          </span>
+        </div>
+      
+        <div data-dc-tpl="55" class="gcs-reveal" style="display: flex; gap: 16px; align-items: center;">
+          <span data-dc-tpl="56" style="flex: 0 0 auto; width: 52px; height: 52px; border-radius: 16px; background: rgb(7, 22, 14); display: flex; align-items: center; justify-content: center;">
+            <svg data-dc-tpl="57" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8abe7c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="58" d="M5 12l5 5L20 7"></path></svg>
+          </span>
+          <span data-dc-tpl="59" style="display: flex; flex-direction: column; gap: 3px;">
+            <strong data-dc-tpl="60" style="font-size: 16px; color: rgb(7, 22, 14);"><span class="sc-interp">1-year warranty</span></strong>
+            <span data-dc-tpl="61" style="font-size: 14px; color: rgb(93, 107, 98);"><span class="sc-interp">On every machine, plus service and toner</span></span>
+          </span>
+        </div>
+      
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="62" style="background: rgb(244, 247, 242);">
+    <div data-dc-tpl="63" style="max-width: 1360px; margin: 0px auto; padding: 100px 40px;">
+      <div data-dc-tpl="64" class="gcs-reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px;">
+        <div data-dc-tpl="65">
+          <p data-dc-tpl="66" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(46, 147, 55);">Find your machine</p>
+          <h2 data-dc-tpl="67" style="margin: 12px 0px 0px; font-size: 52px; font-weight: 800; line-height: 1.02; color: rgb(7, 22, 14);">Shop by category</h2>
+        </div>
+        <a data-dc-tpl="68" href="Catalog.dc.html" class="gcs-btn" style="display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0px 26px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;">All products <span data-dc-tpl="69" class="gcs-arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div data-dc-tpl="70" style="margin-top: 44px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 20px;">
+        
+          <a data-dc-tpl="72" class="gcs-lift gcs-reveal gcs-zoom" href="Catalog-Copiers.dc.html" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <span data-dc-tpl="73" style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgb(255, 255, 255);"><img data-dc-tpl="74" src="images/1fff0601e77b1cc20bc27b38e1989f45.webp" alt="Colour photocopiers" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;"></span>
+            <span data-dc-tpl="75" style="padding: 22px 26px 26px; border-top: 1px solid rgb(232, 238, 230); display: flex; flex-direction: column; gap: 6px;">
+              <strong data-dc-tpl="76" style="font-size: 21px;"><span class="sc-interp">Colour photocopiers</span></strong>
+              <span data-dc-tpl="77" style="font-size: 14px; line-height: 1.55; color: rgb(93, 107, 98);"><span class="sc-interp">A3 multifunction copiers that print, copy and scan in colour or black &amp; white.</span></span>
+              <span data-dc-tpl="78" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(1, 99, 50);"><span class="sc-interp">14</span> products <span data-dc-tpl="79" class="gcs-arrow" aria-hidden="true">→</span></span>
+            </span>
+          </a>
+        
+          <a data-dc-tpl="72" class="gcs-lift gcs-reveal gcs-zoom" href="Catalog-Copiers.dc.html" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <span data-dc-tpl="73" style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgb(255, 255, 255);"><img data-dc-tpl="74" src="images/5f3c5ab1f3f1d76a948ab7c7b3e51e60.webp" alt="Mono photocopiers" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;"></span>
+            <span data-dc-tpl="75" style="padding: 22px 26px 26px; border-top: 1px solid rgb(232, 238, 230); display: flex; flex-direction: column; gap: 6px;">
+              <strong data-dc-tpl="76" style="font-size: 21px;"><span class="sc-interp">Mono photocopiers</span></strong>
+              <span data-dc-tpl="77" style="font-size: 14px; line-height: 1.55; color: rgb(93, 107, 98);"><span class="sc-interp">Fast, low-cost black &amp; white copying for busy offices.</span></span>
+              <span data-dc-tpl="78" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(1, 99, 50);"><span class="sc-interp">3</span> products <span data-dc-tpl="79" class="gcs-arrow" aria-hidden="true">→</span></span>
+            </span>
+          </a>
+        
+          <a data-dc-tpl="72" class="gcs-lift gcs-reveal gcs-zoom" href="Catalog-Scanners.dc.html" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <span data-dc-tpl="73" style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgb(255, 255, 255);"><img data-dc-tpl="74" src="images/590ea45a3ba97559372d5309165f29d0.webp" alt="Document scanners" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;"></span>
+            <span data-dc-tpl="75" style="padding: 22px 26px 26px; border-top: 1px solid rgb(232, 238, 230); display: flex; flex-direction: column; gap: 6px;">
+              <strong data-dc-tpl="76" style="font-size: 21px;"><span class="sc-interp">Document scanners</span></strong>
+              <span data-dc-tpl="77" style="font-size: 14px; line-height: 1.55; color: rgb(93, 107, 98);"><span class="sc-interp">Canon imageFORMULA scanners for records, forms and cheques.</span></span>
+              <span data-dc-tpl="78" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(1, 99, 50);"><span class="sc-interp">8</span> products <span data-dc-tpl="79" class="gcs-arrow" aria-hidden="true">→</span></span>
+            </span>
+          </a>
+        
+          <a data-dc-tpl="72" class="gcs-lift gcs-reveal gcs-zoom" href="Catalog-Printers.dc.html" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <span data-dc-tpl="73" style="height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgb(255, 255, 255);"><img data-dc-tpl="74" src="images/a2205997494f5f57a0139ea34e4acb0f.webp" alt="Printers" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;"></span>
+            <span data-dc-tpl="75" style="padding: 22px 26px 26px; border-top: 1px solid rgb(232, 238, 230); display: flex; flex-direction: column; gap: 6px;">
+              <strong data-dc-tpl="76" style="font-size: 21px;"><span class="sc-interp">Printers</span></strong>
+              <span data-dc-tpl="77" style="font-size: 14px; line-height: 1.55; color: rgb(93, 107, 98);"><span class="sc-interp">Reliable desktop laser printing for any desk.</span></span>
+              <span data-dc-tpl="78" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(1, 99, 50);"><span class="sc-interp">1</span> products <span data-dc-tpl="79" class="gcs-arrow" aria-hidden="true">→</span></span>
+            </span>
+          </a>
+        
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="80" style="background: rgb(255, 255, 255);">
+    <div data-dc-tpl="81" style="max-width: 1360px; margin: 0px auto; padding: 100px 40px;">
+      <div data-dc-tpl="82" class="gcs-reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px;">
+        <div data-dc-tpl="83">
+          <p data-dc-tpl="84" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(46, 147, 55);">Popular now</p>
+          <h2 data-dc-tpl="85" style="margin: 12px 0px 0px; font-size: 52px; font-weight: 800; line-height: 1.02; color: rgb(7, 22, 14);">Best sellers</h2>
+        </div>
+        <a data-dc-tpl="86" href="Catalog.dc.html" style="display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(7, 22, 14);">View all 26 products <span data-dc-tpl="87" class="gcs-arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div data-dc-tpl="88" style="margin-top: 44px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); gap: 20px;">
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-imagerunner-advance-c5535i.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/1fff0601e77b1cc20bc27b38e1989f45.webp" alt="Canon imageRUNNER ADVANCE C5535i" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Canon</span> · <span class="sc-interp">Mono / Colour</span><span data-dc-tpl="98" title="Prints in colour" aria-label="Prints in colour" role="img" style="display: inline-flex; align-items: center; gap: 2px; margin-left: 8px; vertical-align: 1px;"><span data-dc-tpl="99" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(0, 174, 239); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="100" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(236, 0, 140); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="101" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(255, 230, 0); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="102" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(35, 31, 32); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span></span></span>
+              <a data-dc-tpl="103" href="Product-imagerunner-advance-c5535i.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Canon imageRUNNER ADVANCE C5535i</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 40,000</span></strong>
+                
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-taskalfa-4052ci.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/ef97eb383c482b9f681f93d0280a83c6.webp" alt="Kyocera TASKalfa 4052ci" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Kyocera</span> · <span class="sc-interp">Mono / Colour</span><span data-dc-tpl="98" title="Prints in colour" aria-label="Prints in colour" role="img" style="display: inline-flex; align-items: center; gap: 2px; margin-left: 8px; vertical-align: 1px;"><span data-dc-tpl="99" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(0, 174, 239); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="100" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(236, 0, 140); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="101" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(255, 230, 0); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="102" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(35, 31, 32); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span></span></span>
+              <a data-dc-tpl="103" href="Product-taskalfa-4052ci.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Kyocera TASKalfa 4052ci</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 38,000</span></strong>
+                
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-bizhub-c3601.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/f1b6c14d397d48e5c11a91ad350c9d7e.webp" alt="Konica Minolta bizhub C3601" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Konica Minolta</span> · <span class="sc-interp">Mono / Colour</span><span data-dc-tpl="98" title="Prints in colour" aria-label="Prints in colour" role="img" style="display: inline-flex; align-items: center; gap: 2px; margin-left: 8px; vertical-align: 1px;"><span data-dc-tpl="99" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(0, 174, 239); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="100" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(236, 0, 140); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="101" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(255, 230, 0); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span><span data-dc-tpl="102" style="width: 8px; height: 8px; border-radius: 50%; background: rgb(35, 31, 32); box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px;"></span></span></span>
+              <a data-dc-tpl="103" href="Product-bizhub-c3601.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Konica Minolta bizhub C3601</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 30,000</span></strong>
+                
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-imagerunner-3225n-3245n.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/59cb1e170e9abf0b00bbc95896617ca3.webp" alt="Canon imageRUNNER 3225N / 3245N" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Canon</span> · <span class="sc-interp">Mono</span></span>
+              <a data-dc-tpl="103" href="Product-imagerunner-3225n-3245n.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Canon imageRUNNER 3225N / 3245N</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 45,000</span></strong>
+                
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-imageformula-dr-c240.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/d381857f13a28879c7e92274f3206d3f.webp" alt="Canon imageFORMULA DR-C240" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+                <span data-dc-tpl="94" style="position: absolute; top: 18px; left: 18px; padding: 6px 12px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;">Sale</span>
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Canon</span> · <span class="sc-interp">Document scanner</span></span>
+              <a data-dc-tpl="103" href="Product-imageformula-dr-c240.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Canon imageFORMULA DR-C240</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 80,000</span></strong>
+                <s data-dc-tpl="107" style="font-size: 14px; color: rgb(93, 107, 98);"><span class="sc-interp">Rs 88,000</span></s>
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-imageformula-dr-m160ii.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/590ea45a3ba97559372d5309165f29d0.webp" alt="Canon imageFORMULA DR-M160II" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+                <span data-dc-tpl="94" style="position: absolute; top: 18px; left: 18px; padding: 6px 12px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;">Sale</span>
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Canon</span> · <span class="sc-interp">Document scanner</span></span>
+              <a data-dc-tpl="103" href="Product-imageformula-dr-m160ii.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Canon imageFORMULA DR-M160II</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 155,000</span></strong>
+                <s data-dc-tpl="107" style="font-size: 14px; color: rgb(93, 107, 98);"><span class="sc-interp">Rs 160,000</span></s>
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-taskalfa-5002i.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/5f3c5ab1f3f1d76a948ab7c7b3e51e60.webp" alt="Kyocera TASKalfa 5002i" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">Kyocera</span> · <span class="sc-interp">Mono</span></span>
+              <a data-dc-tpl="103" href="Product-taskalfa-5002i.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Kyocera TASKalfa 5002i</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs 35,000</span></strong>
+                
+              </span>
+              <a data-dc-tpl="109" href="Cart.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-weight: 800; font-size: 14px; letter-spacing: 0.04em;">Add to cart</a>
+              
+            </div>
+          </article>
+        
+          <article data-dc-tpl="90" class="gcs-lift gcs-reveal gcs-zoom" style="display: flex; flex-direction: column; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <a data-dc-tpl="91" href="Product-laserjet-1320dn.dc.html" style="position: relative; height: 260px; overflow: hidden; background: rgb(255, 255, 255); display: block;">
+              <img data-dc-tpl="92" src="images/a2205997494f5f57a0139ea34e4acb0f.webp" alt="HP LaserJet 1320dn" style="width: 100%; height: 100%; object-fit: contain; padding: 22px; box-sizing: border-box;">
+              
+            </a>
+            <div data-dc-tpl="95" style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 0%; border-top: 1px solid rgb(232, 238, 230);">
+              <span data-dc-tpl="96" style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);"><span class="sc-interp">HP</span> · <span class="sc-interp">Mono laser printer</span></span>
+              <a data-dc-tpl="103" href="Product-laserjet-1320dn.dc.html" style="font-size: 18px; font-weight: 700; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">HP LaserJet 1320dn</span></a>
+              <span data-dc-tpl="104" style="margin-top: auto; padding-top: 10px; display: flex; align-items: baseline; gap: 10px;">
+                <strong data-dc-tpl="105" style="font-size: 22px; color: rgb(7, 22, 14);"><span class="sc-interp">Price on request</span></strong>
+                
+              </span>
+              
+              <a data-dc-tpl="111" href="Site-Contact.dc.html" class="gcs-btn" style="margin-top: 6px; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 999px; border: 1px solid rgb(7, 22, 14); color: rgb(7, 22, 14); font-weight: 800; font-size: 14px; box-sizing: border-box;">Request price</a>
+            </div>
+          </article>
+        
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="112" style="background: rgb(244, 247, 242);">
+    <div data-dc-tpl="113" style="max-width: 1360px; margin: 0px auto; padding: 90px 40px;">
+      <div data-dc-tpl="114" class="gcs-reveal" style="text-align: center;">
+        <p data-dc-tpl="115" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(46, 147, 55);">Genuine machines</p>
+        <h2 data-dc-tpl="116" style="margin: 12px 0px 0px; font-size: 52px; font-weight: 800; line-height: 1.02; color: rgb(7, 22, 14);">Shop by brand</h2>
+      </div>
+      <div data-dc-tpl="117" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 20px;">
+        
+          <a data-dc-tpl="119" class="gcs-lift gcs-reveal" href="Catalog.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 170px; border-radius: 28px; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <img data-dc-tpl="120" src="images/fe307ceb514fd5451dc6c7ad0cfeff07.png" alt="Canon" style="height: 40px; max-width: 170px; object-fit: contain;">
+            <span data-dc-tpl="121" style="font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(93, 107, 98);"><span class="sc-interp">18</span> products</span>
+          </a>
+        
+          <a data-dc-tpl="119" class="gcs-lift gcs-reveal" href="Catalog.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 170px; border-radius: 28px; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <img data-dc-tpl="120" src="images/c93a4c5b050de160d4d7ee87b9d921b4.png" alt="Kyocera" style="height: 40px; max-width: 170px; object-fit: contain;">
+            <span data-dc-tpl="121" style="font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(93, 107, 98);"><span class="sc-interp">5</span> products</span>
+          </a>
+        
+          <a data-dc-tpl="119" class="gcs-lift gcs-reveal" href="Catalog.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 170px; border-radius: 28px; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <img data-dc-tpl="120" src="images/5e151409ea419cba7f49c720c7abf7ac.png" alt="Konica Minolta" style="height: 40px; max-width: 170px; object-fit: contain;">
+            <span data-dc-tpl="121" style="font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(93, 107, 98);"><span class="sc-interp">2</span> products</span>
+          </a>
+        
+          <a data-dc-tpl="119" class="gcs-lift gcs-reveal" href="Catalog.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 170px; border-radius: 28px; background: rgb(255, 255, 255); color: rgb(7, 22, 14);">
+            <img data-dc-tpl="120" src="images/2afd77f91cc922eeb58ec595792d4f65.png" alt="HP" style="height: 40px; max-width: 170px; object-fit: contain;">
+            <span data-dc-tpl="121" style="font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(93, 107, 98);"><span class="sc-interp">1</span> products</span>
+          </a>
+        
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="122" style="position: relative; background: linear-gradient(120deg, rgb(5, 17, 11) 0%, rgb(10, 46, 27) 48%, rgb(15, 90, 48) 100%); color: rgb(255, 255, 255); overflow: hidden;">
+    <div data-dc-tpl="123" style="max-width: 1360px; margin: 0px auto; padding: 100px 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 48px;">
+      <div data-dc-tpl="124" class="gcs-reveal" style="flex: 1 1 480px; min-width: 0px;">
+        <p data-dc-tpl="125" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(138, 190, 124);">Canon imageFORMULA scanners</p>
+        <h2 data-dc-tpl="126" style="margin: 14px 0px 0px; font-size: 52px; font-weight: 800; line-height: 1.02;">Go paperless.<br data-dc-tpl="127"><span data-dc-tpl="128" style="color: rgb(138, 190, 124);">Up to 100 pages a minute.</span></h2>
+        <p data-dc-tpl="129" style="margin: 20px 0px 0px; font-size: 17px; line-height: 1.65; color: rgb(215, 230, 210); max-width: 520px;">Scan files, cheques and records with 8 Canon models, from compact desk scanners to high-volume production units.</p>
+        <a data-dc-tpl="130" href="Catalog-Scanners.dc.html" class="gcs-btn" style="margin-top: 30px; display: inline-flex; align-items: center; gap: 10px; height: 56px; padding: 0px 30px; border-radius: 999px; background: rgb(138, 190, 124); color: rgb(5, 17, 11); font-weight: 800;">Shop scanners from Rs 25,000 <span data-dc-tpl="131" class="gcs-arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div data-dc-tpl="132" class="gcs-reveal gcs-zoom" style="flex: 1 1 380px; min-width: 0px; height: 360px; border-radius: 28px; overflow: hidden; background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.35) 0px 30px 80px;">
+        <img data-dc-tpl="133" src="images/590ea45a3ba97559372d5309165f29d0.webp" alt="Canon imageFORMULA DR-M160II document scanner" style="width: 100%; height: 100%; object-fit: contain; padding: 26px; box-sizing: border-box;">
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="134" style="background: rgb(255, 255, 255);">
+    <div data-dc-tpl="135" style="max-width: 1360px; margin: 0px auto; padding: 100px 40px;">
+      <div data-dc-tpl="136" class="gcs-reveal">
+        <p data-dc-tpl="137" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(46, 147, 55);">Why buy from GCS</p>
+        <h2 data-dc-tpl="138" style="margin: 12px 0px 0px; font-size: 52px; font-weight: 800; line-height: 1.02; color: rgb(7, 22, 14);">30 years behind<br data-dc-tpl="139">every machine.</h2>
+      </div>
+      <div data-dc-tpl="140" style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 40px;">
+        
+          <div data-dc-tpl="142" class="gcs-reveal" style="display: flex; flex-direction: column; gap: 12px;">
+            <strong data-dc-tpl="143" style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: rgb(138, 190, 124);"><span class="sc-interp">01</span></strong>
+            <span data-dc-tpl="144" style="height: 3px; width: 48px; background: rgb(7, 22, 14);"></span>
+            <strong data-dc-tpl="145" style="font-size: 19px; color: rgb(7, 22, 14);"><span class="sc-interp">Trusted by institutions</span></strong>
+            <span data-dc-tpl="146" style="font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">The same team that equips banks and universities now serves every customer directly.</span></span>
+          </div>
+        
+          <div data-dc-tpl="142" class="gcs-reveal" style="display: flex; flex-direction: column; gap: 12px;">
+            <strong data-dc-tpl="143" style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: rgb(138, 190, 124);"><span class="sc-interp">02</span></strong>
+            <span data-dc-tpl="144" style="height: 3px; width: 48px; background: rgb(7, 22, 14);"></span>
+            <strong data-dc-tpl="145" style="font-size: 19px; color: rgb(7, 22, 14);"><span class="sc-interp">Clear prices in PKR</span></strong>
+            <span data-dc-tpl="146" style="font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">No hidden costs. See the price before you call.</span></span>
+          </div>
+        
+          <div data-dc-tpl="142" class="gcs-reveal" style="display: flex; flex-direction: column; gap: 12px;">
+            <strong data-dc-tpl="143" style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: rgb(138, 190, 124);"><span class="sc-interp">03</span></strong>
+            <span data-dc-tpl="144" style="height: 3px; width: 48px; background: rgb(7, 22, 14);"></span>
+            <strong data-dc-tpl="145" style="font-size: 19px; color: rgb(7, 22, 14);"><span class="sc-interp">Delivery across Pakistan</span></strong>
+            <span data-dc-tpl="146" style="font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">Careful delivery of heavy machines, with setup on site.</span></span>
+          </div>
+        
+          <div data-dc-tpl="142" class="gcs-reveal" style="display: flex; flex-direction: column; gap: 12px;">
+            <strong data-dc-tpl="143" style="font-size: 44px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: rgb(138, 190, 124);"><span class="sc-interp">04</span></strong>
+            <span data-dc-tpl="144" style="height: 3px; width: 48px; background: rgb(7, 22, 14);"></span>
+            <strong data-dc-tpl="145" style="font-size: 19px; color: rgb(7, 22, 14);"><span class="sc-interp">Support that stays</span></strong>
+            <span data-dc-tpl="146" style="font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">Service visits, spare parts and toner from one supplier.</span></span>
+          </div>
+        
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="147" id="quote" style="background: linear-gradient(120deg, rgb(5, 17, 11) 0%, rgb(10, 46, 27) 48%, rgb(15, 90, 48) 100%); color: rgb(255, 255, 255);">
+    <div data-dc-tpl="148" style="max-width: 1360px; margin: 0px auto; padding: 100px 40px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center;">
+      <div data-dc-tpl="149" class="gcs-reveal" style="flex: 1 1 440px; min-width: 0px;">
+        <p data-dc-tpl="150" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(138, 190, 124);">Business &amp; institutions</p>
+        <h2 data-dc-tpl="151" style="margin: 14px 0px 0px; font-size: 52px; font-weight: 800; line-height: 1.02;">Buying for a bank, university or company?</h2>
+        <p data-dc-tpl="152" style="margin: 18px 0px 0px; font-size: 17px; line-height: 1.65; color: rgb(215, 230, 210);">Tell us what you need and an account manager will send you a quotation.</p>
+        <ul data-dc-tpl="153" style="margin: 28px 0px 0px; padding: 0px; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0px, 1fr)); gap: 14px 24px; font-size: 15px; color: rgb(231, 241, 227);">
+          <li data-dc-tpl="154">✓ Volume pricing</li>
+          <li data-dc-tpl="155">✓ Corporate invoices &amp; POs</li>
+          <li data-dc-tpl="156">✓ Delivery, installation &amp; training</li>
+          <li data-dc-tpl="157">✓ Service contracts &amp; toner</li>
+        </ul>
+      </div>
+      <form data-dc-tpl="158" class="gcs-reveal" style="flex: 1 1 440px; min-width: 0px; padding: 34px; border-radius: 28px; background: rgb(255, 255, 255); color: rgb(19, 36, 26); display: grid; grid-template-columns: repeat(2, minmax(0px, 1fr)); gap: 16px; box-shadow: rgba(0, 0, 0, 0.35) 0px 30px 80px;">
+        <label data-dc-tpl="159" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Your name *<input data-dc-tpl="160" type="text" required="" style="height: 48px; padding: 0px 14px; border: 1px solid rgb(196, 209, 192); border-radius: 14px; font: inherit;"></label>
+        <label data-dc-tpl="161" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Organisation<input data-dc-tpl="162" type="text" style="height: 48px; padding: 0px 14px; border: 1px solid rgb(196, 209, 192); border-radius: 14px; font: inherit;"></label>
+        <label data-dc-tpl="163" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Phone *<input data-dc-tpl="164" type="tel" required="" style="height: 48px; padding: 0px 14px; border: 1px solid rgb(196, 209, 192); border-radius: 14px; font: inherit;"></label>
+        <label data-dc-tpl="165" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">City<input data-dc-tpl="166" type="text" style="height: 48px; padding: 0px 14px; border: 1px solid rgb(196, 209, 192); border-radius: 14px; font: inherit;"></label>
+        <label data-dc-tpl="167" style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">What do you need?<textarea data-dc-tpl="168" rows="3" placeholder="e.g. 5 colour copiers for our branches in Lahore" style="padding: 12px 14px; border: 1px solid rgb(196, 209, 192); border-radius: 14px; font: inherit; resize: vertical;"></textarea></label>
+        <label data-dc-tpl="169" style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; line-height: 1.5; color: rgb(74, 90, 80);"><input data-dc-tpl="170" type="checkbox" required="" style="flex: 0 0 auto; margin-top: 1px; width: 16px; height: 16px; accent-color: rgb(1, 99, 50);"><span data-dc-tpl="171">I agree that GCS may contact me about this request. See our <a data-dc-tpl="172" href="Site-Policies.dc.html">Privacy policy</a>.</span></label>
+        <button data-dc-tpl="173" type="submit" class="gcs-btn" style="grid-column: 1 / -1; height: 54px; border: 0px; border-radius: 999px; background: rgb(7, 22, 14); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 800; font-size: 15px; letter-spacing: 0.04em; cursor: pointer;">Request quotation →</button>
+      </form>
+    </div>
+  </section>
+
+  
+  
+  <footer data-dc-tpl="174" style="background: rgb(4, 13, 8); color: rgba(255, 255, 255, 0.65); font-size: 14px;">
+    <div data-dc-tpl="175" style="max-width: 1360px; margin: 0px auto; padding: 72px 40px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 40px;">
+      <div data-dc-tpl="176" style="display: flex; flex-direction: column; gap: 16px;">
+        <span data-dc-tpl="177" style="display: flex; align-items: center; gap: 12px;">
+          <img data-dc-tpl="178" src="images/bfb307b4998742d2dac945e0ab66a954.svg" alt="GCS logo" style="width: 52px; height: 52px; filter: drop-shadow(rgba(138, 190, 124, 0.35) 0px 4px 14px);">
+          <strong data-dc-tpl="179" style="color: rgb(255, 255, 255); font-size: 15px; letter-spacing: 0.02em;"><span data-dc-tpl="180" class="gcs-brand">GLOBAL <span data-dc-tpl="181" style="color: rgb(138, 190, 124);">COMMUNICATION</span> SYSTEM</span></strong>
+        </span>
+        <span data-dc-tpl="182" style="line-height: 1.7;">Office automation and document solutions in Pakistan since 1995. PaperCut Certified Authorized Solution Center.</span>
+      </div>
+      <div data-dc-tpl="183" style="display: flex; flex-direction: column; gap: 12px;">
+        <strong data-dc-tpl="184" style="color: rgb(255, 255, 255); font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;">Company</strong>
+        <a data-dc-tpl="185" href="Site-About.dc.html" style="color: rgba(255, 255, 255, 0.65);">About us</a>
+        <a data-dc-tpl="186" href="Site-Clients.dc.html" style="color: rgba(255, 255, 255, 0.65);">Clients &amp; achievements</a>
+        <a data-dc-tpl="187" href="Site-Contact.dc.html" style="color: rgba(255, 255, 255, 0.65);">Contact</a>
+        <a data-dc-tpl="188" href="Main.dc.html" style="color: rgba(255, 255, 255, 0.65);">Online shop</a>
+        <a data-dc-tpl="189" href="Site-Policies.dc.html" style="color: rgba(255, 255, 255, 0.65);">Policies &amp; terms</a>
+      </div>
+      <div data-dc-tpl="190" style="display: flex; flex-direction: column; gap: 12px;">
+        <strong data-dc-tpl="191" style="color: rgb(255, 255, 255); font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;">Solutions</strong>
+        <a data-dc-tpl="192" href="Site-PaperCut.dc.html" style="color: rgba(255, 255, 255, 0.65);">PaperCut software</a>
+        <a data-dc-tpl="193" href="Site-Services.dc.html" style="color: rgba(255, 255, 255, 0.65);">Sales &amp; rental</a>
+        <a data-dc-tpl="194" href="Site-Services.dc.html" style="color: rgba(255, 255, 255, 0.65);">Maintenance</a>
+        <a data-dc-tpl="195" href="Site-Services.dc.html" style="color: rgba(255, 255, 255, 0.65);">Bulk printing &amp; scanning</a>
+      </div>
+      <div data-dc-tpl="196" style="display: flex; flex-direction: column; gap: 12px;">
+        <strong data-dc-tpl="197" style="color: rgb(255, 255, 255); font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;">Head office</strong>
+        <span data-dc-tpl="198">House No. 19-A, 3 Jinnah Park, Gulberg II, Lahore</span>
+        <span data-dc-tpl="199">+92-42-35759711 · 35759683 · 35779077</span>
+        <span data-dc-tpl="200">Fax +92-42-35779075</span>
+        <a data-dc-tpl="201" href="mailto:info@gcsho.com" style="color: rgb(138, 190, 124);">info@gcsho.com</a>
+      </div>
+    </div>
+    <div data-dc-tpl="202" style="max-width: 1360px; margin: 0px auto; padding: 22px 40px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 12px; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.45);">
+      <span data-dc-tpl="203">© Global Communication System (Pvt) Ltd</span>
+      <span data-dc-tpl="204">gcsho.com.pk</span>
+    </div>
+  </footer>
+  
+  <a data-dc-tpl="205" href="https://wa.me/923000000000?text=Hi%20GCS%2C%20I%20have%20a%20question." class="gcs-wa" aria-label="Chat with GCS on WhatsApp">
+    <span data-dc-tpl="206" class="gcs-wa-label"><strong data-dc-tpl="207">Chat with GCS</strong><span data-dc-tpl="208">on WhatsApp</span></span>
+    <span data-dc-tpl="209" class="gcs-wa-btn">
+      <svg data-dc-tpl="210" width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path data-dc-tpl="211" fill="#ffffff" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+    </span>
+  </a></div></div></div>
+
+
+
+</body></html>

@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>About GCS (phone)</title>
+<style>x-dc{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-dc-tpl="1"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" data-dc-tpl="2"><link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" data-dc-tpl="3"><style data-dc-tpl="4">
+body{margin:0;background:#07160e}
+a{color:#016332;text-decoration:none}a:hover{color:#014a26}
+
+/* Hero slideshow: three photos crossfade with a slow zoom, the stage floats */
+.gcs-stage{animation:gcsFloat 7s ease-in-out infinite}
+.gcs-slide{opacity:0;animation:gcsSlide 15s infinite}
+.gcs-slide.s2{animation-delay:5s}
+.gcs-slide.s3{animation-delay:10s}
+.gcs-cap{opacity:0;animation:gcsCap 15s infinite}
+.gcs-cap.s2{animation-delay:5s}
+.gcs-cap.s3{animation-delay:10s}
+.gcs-bar{animation:gcsBar 5s linear infinite}
+@keyframes gcsSlide{0%{opacity:0;transform:scale(1.08) translateX(30px)}6%{opacity:1}30%{opacity:1;transform:scale(1) translateX(0)}36%{opacity:0;transform:scale(.98) translateX(-20px)}100%{opacity:0}}
+@keyframes gcsCap{0%{opacity:0;transform:translateY(10px)}6%{opacity:1;transform:none}30%{opacity:1}34%{opacity:0}100%{opacity:0}}
+@keyframes gcsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes gcsBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes gcsGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.85;transform:scale(1.06)}}
+.gcs-glow{animation:gcsGlow 8s ease-in-out infinite}
+
+/* Page-load entrance */
+.gcs-rise{animation:gcsRise 1s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.15s}.d2{animation-delay:.3s}.d3{animation-delay:.45s}.d4{animation-delay:.6s}
+@keyframes gcsRise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
+
+/* Scroll reveal where the browser supports scroll-driven animation */
+@supports (animation-timeline: view()){
+  .gcs-reveal{animation:gcsRise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+}
+
+/* Logo marquee */
+.gcs-marquee{animation:gcsMarquee 34s linear infinite}
+.gcs-marquee-wrap:hover .gcs-marquee{animation-play-state:paused}
+@keyframes gcsMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* Scroll cue */
+.gcs-cue{animation:gcsCue 2s ease-in-out infinite}
+@keyframes gcsCue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(14px);opacity:0}100%{opacity:0}}
+
+/* Hover states */
+.gcs-lift{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s}
+.gcs-lift:hover{transform:translateY(-8px);box-shadow:0 24px 50px rgba(7,22,14,.18)}
+.gcs-zoom img{transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.gcs-zoom:hover img{transform:scale(1.07)}
+.gcs-arrow{transition:transform .3s}
+a:hover .gcs-arrow{transform:translateX(6px)}
+.gcs-btn{transition:background .25s,color .25s,transform .25s}
+.gcs-btn:hover{transform:translateY(-2px)}
+
+@media (prefers-reduced-motion: reduce){
+  .gcs-stage,.gcs-glow,.gcs-marquee,.gcs-cue,.gcs-bar{animation:none}
+  .gcs-slide,.gcs-cap{animation:none;opacity:0}
+  .gcs-slide.s1,.gcs-cap.s1{opacity:1}
+  .gcs-rise,.gcs-reveal{animation:none}
+}
+
+/* Type: Inter for reading, Urbanist for display */
+h1,h2,h3{font-family:Urbanist,Inter,sans-serif;font-stretch:100%;font-weight:800;letter-spacing:-0.025em !important}
+strong[style*="letter-spacing: -0.04em"],strong[style*="letter-spacing: -0.05em"],strong[style*="font-size: 3"],strong[style*="font-size: 6"],strong[style*="font-size: 7"]{font-family:Urbanist,Inter,sans-serif;font-stretch:100%}
+span[style*="letter-spacing: 0.01em"]{font-family:Urbanist,Inter,sans-serif;font-stretch:100%}
+/* Hero product: gentle float and soft floor shadow */
+.gcs-float{animation:gcsFloat 7s ease-in-out infinite}
+.gcs-shadow{animation:gcsShadow 7s ease-in-out infinite}
+@keyframes gcsShadow{0%,100%{transform:scaleX(1);opacity:.55}50%{transform:scaleX(.86);opacity:.35}}
+@media (prefers-reduced-motion: reduce){.gcs-float,.gcs-shadow{animation:none}}
+
+/* Brand name */
+.gcs-brand{font-family:Urbanist,Inter,sans-serif;font-stretch:100%;font-weight:800;letter-spacing:0.07em}
+/* Cursor-following levitation */
+.gcs-tilt{transition:transform .35s cubic-bezier(.2,.7,.2,1);will-change:transform;transform-style:preserve-3d}
+
+/* Phones */
+@media (max-width: 720px){
+  header > div{padding:16px 20px !important;gap:12px !important}
+  header nav{width:100%;flex-wrap:nowrap !important;overflow-x:auto;gap:6px 18px !important;padding-bottom:6px;font-size:12px !important}
+  header nav a{flex:none;white-space:nowrap}
+  header form[role="search"]{flex:1 1 100% !important}
+  section > div[style*="max-width: 1360px"], footer > div[style*="max-width: 1360px"], section[style*="max-width: 1360px"]{padding-left:20px !important;padding-right:20px !important}
+  section > div[style*="padding: 100px 40px"], section > div[style*="padding: 96px 40px"], section > div[style*="padding: 110px 40px"], section > div[style*="padding: 120px 40px"], section > div[style*="padding: 140px 40px"], section > div[style*="padding: 72px 40px"]{padding-top:64px !important;padding-bottom:64px !important}
+  h1[style*="font-size: 5"], h1[style*="font-size: 6"], h1[style*="font-size: 7"]{font-size:42px !important;line-height:1.04 !important}
+  h2[style*="font-size: 4"], h2[style*="font-size: 5"], h2[style*="font-size: 6"], h2[style*="font-size: 7"]{font-size:32px !important;line-height:1.08 !important}
+  strong[style*="font-size: 6"], strong[style*="font-size: 7"]{font-size:44px !important}
+  div[aria-hidden="true"][style*="white-space: nowrap"], strong[aria-hidden="true"]{font-size:110px !important}
+  section[style*="min-height"]{min-height:0 !important}
+  div[style*="flex: 1 1 460px"]{height:340px !important}
+  .gcs-float img{height:240px !important}
+  div[style*="padding: 44px; border-radius: 28px"], div[style*="padding: 40px; border-radius: 28px"]{padding:24px !important}
+  [style*="grid-template-columns: repeat(2, minmax(0, 1fr))"], [style*="grid-template-columns: repeat(3, minmax(0, 1fr))"]{grid-template-columns:1fr !important}
+  a[style*="height: 520px"]{height:400px !important}
+}
+/* Hero parallax: as the page scrolls, the printer drifts down and shrinks slightly while the glow moves at a different speed */
+@supports (animation-timeline: scroll()){
+  @keyframes gcsPxImg{from{translate:0 0;scale:1}to{translate:0 150px;scale:.9}}
+  @keyframes gcsPxGlow{from{translate:0 0}to{translate:0 260px}}
+  .gcs-float{animation:gcsFloat 7s ease-in-out infinite,gcsPxImg linear both;animation-timeline:auto,scroll(root);animation-range:normal,0px 760px}
+  .gcs-glow{animation:gcsGlow 8s ease-in-out infinite,gcsPxGlow linear both;animation-timeline:auto,scroll(root);animation-range:normal,0px 760px}
+  /* Phones: the printer sits lower on the screen, so instead of drifting it rises gently into place as it scrolls into view */
+  @keyframes gcsPxPhone{from{translate:0 40px;scale:.9}to{translate:0 0;scale:1}}
+  @media (max-width: 720px){
+    .gcs-float{animation:gcsFloat 7s ease-in-out infinite,gcsPxPhone linear both;animation-timeline:auto,scroll(root);animation-range:normal,0px 450px}
+    .gcs-glow{animation:gcsGlow 8s ease-in-out infinite;translate:none}
+  }
+}
+@media (prefers-reduced-motion: reduce){.gcs-float,.gcs-glow{animation:none !important;translate:none !important;scale:none !important}}
+/* Phones: show "Shop online" first in the menu so it is visible without scrolling the menu */
+@media (max-width: 720px){
+  header nav a.gcs-btn[href="Main.dc.html"]{order:-1;height:34px !important;padding:0 14px !important;font-size:12px !important;flex:none}
+}
+/* Phone compaction: two cards per row, shorter images, tighter spacing */
+@media (max-width: 720px){
+  [style*="minmax(min(150px, 100%)"],[style*="minmax(min(220px, 100%)"],[style*="minmax(min(240px, 100%)"],[style*="minmax(min(250px, 100%)"],[style*="minmax(min(260px, 100%)"],[style*="minmax(min(280px, 100%)"],[style*="minmax(min(290px, 100%)"],[style*="minmax(min(300px, 100%)"],.gcs-clients10{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
+  [style*="minmax(min(240px, 100%)"] > *,[style*="minmax(min(250px, 100%)"] > *,[style*="minmax(min(260px, 100%)"] > *,[style*="minmax(min(280px, 100%)"] > *,[style*="minmax(min(290px, 100%)"] > *,[style*="minmax(min(300px, 100%)"] > *,.gcs-clients10 > *{padding-left:14px !important;padding-right:14px !important;border-radius:18px !important}
+  [style*="minmax(min(2"] h3,[style*="minmax(min(300px"] h3{font-size:16px !important;line-height:1.25 !important}
+  [style*="minmax(min(2"] p,[style*="minmax(min(300px"] p{font-size:13px !important;line-height:1.45 !important}
+  [style*="minmax(min(2"] strong[style*="font-size: 4"],[style*="minmax(min(2"] strong[style*="font-size: 5"],[style*="minmax(min(2"] strong[style*="font-size: 6"]{font-size:30px !important}
+  [style*="height: 340px"],[style*="height: 260px"],[style*="height: 250px"],[style*="height: 210px"],[style*="height: 170px"],[style*="height: 160px"]{height:118px !important}
+  [style*="height: 170px"] img,[style*="height: 160px"] img{max-height:48px !important}
+  a[style*="height: 520px"]{height:300px !important}
+  a[style*="height: 520px"] > span[style*="width: 200px; height: 200px"]{width:84px !important;height:84px !important;top:16px !important;right:16px !important;border-radius:16px !important;padding:8px !important;box-sizing:border-box}
+  a[style*="height: 520px"] > span[style*="width: 200px; height: 200px"] img{max-width:100% !important;max-height:100% !important}
+  a[style*="height: 520px"] > span[style*="bottom: 0"]{padding:20px !important}
+  a[style*="height: 520px"] strong{font-size:24px !important}
+  a[style*="height: 520px"] img[style*="padding: 40px 40px 140px"]{padding:16px 16px 110px !important}
+  [style*="minmax(min(2"] [style*="padding: 2"]:not([style*="padding: 2px"]),[style*="minmax(min(2"] [style*="padding: 3"]:not([style*="padding: 3px"]),[style*="minmax(min(300px"] [style*="padding: 2"]:not([style*="padding: 2px"]),[style*="minmax(min(300px"] [style*="padding: 3"]:not([style*="padding: 3px"]){padding:14px !important}
+  aside[aria-label="Filters"]{gap:14px !important}
+  aside[aria-label="Filters"] h2{font-size:13px !important;margin-bottom:6px !important}
+  aside[aria-label="Filters"] > div > div{flex-direction:row !important;flex-wrap:nowrap !important;overflow-x:auto;gap:6px !important;padding-bottom:4px;scrollbar-width:none}
+  aside[aria-label="Filters"] > div > div button{flex:none !important;white-space:nowrap;gap:8px;min-height:40px !important}
+  [style*="minmax(min(2"] strong[style*="font-size: 2"],[style*="minmax(min(300px"] strong[style*="font-size: 2"],[style*="minmax(min(2"] span[style*="font-size: 20px"],[style*="minmax(min(300px"] span[style*="font-size: 20px"],[style*="minmax(min(2"] span[style*="font-size: 18px"]{font-size:16px !important}
+  [style*="justify-content: space-between; align-items: center; margin-top: 10px"]{flex-direction:column !important;align-items:flex-start !important;gap:4px !important}
+  img[style*="height: 180px; object-fit: contain"]{height:110px !important}
+  div[style*="padding: 40px; border-radius: 28px; background: #ffffff"]{padding:18px !important}
+  footer > div[style*="padding: 72px 40px 40px"] > div:first-child{grid-column:1 / -1}
+  div[style*="flex: 1 1 460px"]{height:250px !important}
+  .gcs-float img{height:190px !important}
+  .gcs-cue,div[aria-hidden="true"][style*="left: 50%; bottom: 28px"]{display:none !important}
+  div[aria-hidden="true"][style*="white-space: nowrap"],strong[aria-hidden="true"]{display:none !important}
+  section > div[style*="padding: 100px 40px"],section > div[style*="padding: 96px 40px"],section > div[style*="padding: 110px 40px"],section > div[style*="padding: 120px 40px"],section > div[style*="padding: 140px 40px"],section > div[style*="padding: 72px 40px"],section[style*="padding: 96px 40px"]{padding-top:40px !important;padding-bottom:40px !important}
+  h2[style*="font-size: 4"],h2[style*="font-size: 5"],h2[style*="font-size: 6"],h2[style*="font-size: 7"]{font-size:28px !important}
+  [style*="margin-top: 48px"]{margin-top:22px !important}
+  footer > div[style*="padding: 72px 40px 40px"]{padding-top:40px !important;gap:24px !important}
+}
+/* Very large screens */
+@media (min-width: 1800px){
+  [style*="max-width: 1360px"]{max-width:1560px !important}
+}
+
+/* Floating WhatsApp button */
+.gcs-wa{position:fixed;right:24px;bottom:24px;z-index:50;display:flex;align-items:center;gap:12px;text-decoration:none}
+.gcs-wa-btn{flex:none;width:58px;height:58px;border-radius:18px;background:#21c063;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(33,192,99,.32),0 2px 6px rgba(7,22,14,.18);transition:transform .25s cubic-bezier(.2,.7,.2,1),background .25s,box-shadow .25s}
+.gcs-wa:hover .gcs-wa-btn{transform:translateY(-3px);background:#1cab57;box-shadow:0 14px 30px rgba(33,192,99,.4),0 3px 8px rgba(7,22,14,.2)}
+.gcs-wa:focus-visible{outline:none}.gcs-wa:focus-visible .gcs-wa-btn{box-shadow:0 0 0 3px #ffffff,0 0 0 6px #21c063}
+.gcs-wa-label{display:flex;flex-direction:column;gap:2px;padding:9px 14px;border-radius:12px;background:#ffffff;border:1px solid #e3ebe0;box-shadow:0 8px 22px rgba(7,22,14,.14);font-family:Inter,system-ui,sans-serif;white-space:nowrap;opacity:0;transform:translateX(8px);transition:opacity .25s,transform .25s;pointer-events:none}
+.gcs-wa:hover .gcs-wa-label,.gcs-wa:focus-visible .gcs-wa-label{opacity:1;transform:none}
+.gcs-wa-label strong{font-size:14px;font-weight:700;color:#07160e;line-height:1.2}
+.gcs-wa-label span{display:flex;align-items:center;gap:6px;font-size:12px;color:#5d6b62;line-height:1.2}
+.gcs-wa-label span::before{content:"";width:7px;height:7px;border-radius:50%;background:#21c063}
+@media (max-width: 720px){.gcs-wa{right:16px;bottom:16px}.gcs-wa-label{display:none}.gcs-wa-btn{width:54px;height:54px;border-radius:16px}}
+@media (hover: none){.gcs-wa-label{display:none}}
+@media (prefers-reduced-motion: reduce){.gcs-wa-btn,.gcs-wa-label{transition:none}}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="Phone-About"><div data-dc-tpl="5" style="font-family: Inter, system-ui, sans-serif; color: rgb(19, 36, 26); background: rgb(255, 255, 255); overflow: hidden;">
+
+  <header data-dc-tpl="6" style="position: relative; z-index: 3; background: rgb(7, 22, 14); color: rgb(255, 255, 255);">
+    <div data-dc-tpl="7" style="max-width: 1360px; margin: 0px auto; padding: 26px 40px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px;">
+      <a data-dc-tpl="8" href="Phone-Home.dc.html" style="display: flex; align-items: center; gap: 12px; color: rgb(255, 255, 255);">
+        <img data-dc-tpl="9" src="images/bfb307b4998742d2dac945e0ab66a954.svg" alt="GCS logo" style="width: 60px; height: 60px; filter: drop-shadow(rgba(138, 190, 124, 0.35) 0px 4px 14px);">
+        <span data-dc-tpl="10" style="display: flex; flex-direction: column; line-height: 1.15;">
+          <span data-dc-tpl="11" style="font-weight: 800; font-size: 18px; letter-spacing: 0.01em;"><span data-dc-tpl="12" class="gcs-brand">GLOBAL <span data-dc-tpl="13" style="color: rgb(138, 190, 124);">COMMUNICATION</span> SYSTEM</span></span>
+          <span data-dc-tpl="14" style="font-family: Inter, system-ui, sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 0.02em; color: rgba(255, 255, 255, 0.55); margin-top: 3px;">Document solutions since 1995</span>
+        </span>
+      </a>
+      <nav data-dc-tpl="15" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 28px; font-weight: 600; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;">
+        <a data-dc-tpl="16" href="Phone-About.dc.html" style="color: rgb(138, 190, 124);">About</a>
+        <a data-dc-tpl="17" href="Phone-Services.dc.html" style="color: rgb(255, 255, 255);">Services</a>
+        <a data-dc-tpl="18" href="Phone-PaperCut.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0px 16px; border-radius: 999px; background: rgba(138, 190, 124, 0.18); border: 1px solid rgba(138, 190, 124, 0.6); color: rgb(255, 255, 255); font-weight: 800;"><span data-dc-tpl="19" style="width: 7px; height: 7px; border-radius: 50%; background: rgb(138, 190, 124);"></span>PaperCut</a>
+        <a data-dc-tpl="20" href="Phone-Clients.dc.html" style="color: rgb(255, 255, 255);">Clients</a>
+        <a data-dc-tpl="21" href="Phone-Contact.dc.html" style="color: rgb(255, 255, 255);">Contact</a>
+        <a data-dc-tpl="22" href="Main.dc.html" class="gcs-btn" style="display: inline-flex; align-items: center; height: 46px; padding: 0px 22px; border-radius: 999px; background: rgb(255, 255, 255); color: rgb(7, 22, 14); font-weight: 800;">Shop online</a>
+      </nav>
+    </div>
+  </header>
+
+  <section data-dc-tpl="23" style="position: relative; background: linear-gradient(120deg, rgb(5, 17, 11) 0%, rgb(10, 46, 27) 48%, rgb(15, 90, 48) 100%); color: rgb(255, 255, 255); overflow: hidden;">
+    <div data-dc-tpl="24" aria-hidden="true" style="position: absolute; left: -16px; bottom: -56px; font-size: 230px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: rgba(138, 190, 124, 0.063); white-space: nowrap;">SINCE 1995</div>
+    <div data-dc-tpl="25" style="position: relative; max-width: 1360px; margin: 0px auto; padding: 40px 40px 90px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px;">
+      <div data-dc-tpl="26" style="flex: 1 1 520px; min-width: 0px; max-width: 700px;">
+        <nav data-dc-tpl="27" aria-label="Breadcrumb" class="gcs-rise" style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6);"><a data-dc-tpl="28" href="Phone-Home.dc.html" style="color: rgba(255, 255, 255, 0.6);">Home</a> / About us</nav>
+        <p data-dc-tpl="29" class="gcs-rise d1" style="margin: 26px 0px 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(138, 190, 124);">About GCS</p>
+        <h1 data-dc-tpl="30" class="gcs-rise d2" style="margin: 14px 0px 0px; font-size: 68px; line-height: 1; font-weight: 800; letter-spacing: -0.035em;">A pioneer of document<br data-dc-tpl="31">solutions in Pakistan.</h1>
+        <p data-dc-tpl="32" class="gcs-rise d3" style="margin: 22px 0px 0px; font-size: 18px; line-height: 1.65; color: rgb(215, 230, 210); max-width: 640px;">We supply and maintain new and refurbished heavy, medium and light duty photocopiers and printers, backed by after-sales service, for multinational and national companies and foreign and local banks.</p>
+      </div>
+      <div data-dc-tpl="33" class="gcs-rise d2" style="flex: 1 1 460px; min-width: 0px; position: relative; height: 500px; display: flex; align-items: flex-end; justify-content: center;">
+        <div data-dc-tpl="34" aria-hidden="true" class="gcs-glow" style="position: absolute; left: 50%; top: 46%; width: 525px; height: 525px; margin: -262px 0px 0px -262px; border-radius: 50%; background: radial-gradient(closest-side, rgba(138, 190, 124, 0.38), rgba(138, 190, 124, 0));"></div>
+        <div data-dc-tpl="35" aria-hidden="true" class="gcs-shadow" style="position: absolute; left: 14%; right: 14%; bottom: 46px; height: 40px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));"></div>
+        <div data-dc-tpl="36" class="gcs-float" style="position: relative; margin-bottom: 60px;"><div data-dc-tpl="37" class="gcs-tilt" style="transform: perspective(1400px) translate3d(0px, 0px, 0px) rotateY(0deg) rotateX(0deg);"><img data-dc-tpl="38" src="images/532e8a50c85822f922f2fa181b572c93.webp" alt="Konica Minolta bizhub multifunction copier" style="display: block; max-width: 100%; height: 420px; object-fit: contain; filter: drop-shadow(rgba(0, 0, 0, 0.45) 0px 30px 40px);"></div></div>
+      </div>
+    </div>
+  </section>
+
+
+  
+  <section data-dc-tpl="39" style="max-width: 1360px; margin: 0px auto; padding: 64px 40px;">
+    <p data-dc-tpl="40" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(1, 99, 50);">Our story</p>
+    <h2 data-dc-tpl="41" class="gcs-reveal" style="margin: 8px 0px 0px; font-size: 48px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; color: rgb(7, 22, 14);">Three decades of growth</h2>
+    <ol data-dc-tpl="42" style="margin: 32px 0px 0px; padding: 0px; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 20px;">
+      
+        <li data-dc-tpl="44" class="gcs-lift gcs-reveal" style="padding: 26px; border-radius: 24px; border-width: 4px 1px 1px; border-style: solid; border-color: rgb(1, 99, 50) rgb(221, 229, 218) rgb(221, 229, 218); border-image: none;">
+          <strong data-dc-tpl="45" style="display: block; font-size: 30px; font-weight: 800; color: rgb(1, 99, 50);"><span class="sc-interp">1995</span></strong>
+          <strong data-dc-tpl="46" style="display: block; margin-top: 8px; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">Founded</span></strong>
+          <p data-dc-tpl="47" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">Established in August 1995 as a small business unit selling office automation machines.</span></p>
+        </li>
+      
+        <li data-dc-tpl="44" class="gcs-lift gcs-reveal" style="padding: 26px; border-radius: 24px; border-width: 4px 1px 1px; border-style: solid; border-color: rgb(1, 99, 50) rgb(221, 229, 218) rgb(221, 229, 218); border-image: none;">
+          <strong data-dc-tpl="45" style="display: block; font-size: 30px; font-weight: 800; color: rgb(1, 99, 50);"><span class="sc-interp">2003</span></strong>
+          <strong data-dc-tpl="46" style="display: block; margin-top: 8px; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">New leadership</span></strong>
+          <p data-dc-tpl="47" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">Management taken over by a team of experienced professionals, with offices in Lahore, Karachi, Islamabad, Gujranwala, Faisalabad, Sialkot and Multan.</span></p>
+        </li>
+      
+        <li data-dc-tpl="44" class="gcs-lift gcs-reveal" style="padding: 26px; border-radius: 24px; border-width: 4px 1px 1px; border-style: solid; border-color: rgb(1, 99, 50) rgb(221, 229, 218) rgb(221, 229, 218); border-image: none;">
+          <strong data-dc-tpl="45" style="display: block; font-size: 30px; font-weight: 800; color: rgb(1, 99, 50);"><span class="sc-interp">2016</span></strong>
+          <strong data-dc-tpl="46" style="display: block; margin-top: 8px; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">Private Limited</span></strong>
+          <p data-dc-tpl="47" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">Incorporated as a Private Limited Company with the Securities and Exchange Commission of Pakistan.</span></p>
+        </li>
+      
+        <li data-dc-tpl="44" class="gcs-lift gcs-reveal" style="padding: 26px; border-radius: 24px; border-width: 4px 1px 1px; border-style: solid; border-color: rgb(1, 99, 50) rgb(221, 229, 218) rgb(221, 229, 218); border-image: none;">
+          <strong data-dc-tpl="45" style="display: block; font-size: 30px; font-weight: 800; color: rgb(1, 99, 50);"><span class="sc-interp">Today</span></strong>
+          <strong data-dc-tpl="46" style="display: block; margin-top: 8px; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">PaperCut &amp; online shop</span></strong>
+          <p data-dc-tpl="47" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(74, 90, 80);"><span class="sc-interp">A PaperCut Certified Authorized Solution Center serving corporates and banks nationwide, now also selling machines through our online shop.</span></p>
+        </li>
+      
+    </ol>
+  </section>
+
+  
+  <section data-dc-tpl="48" style="background: rgb(244, 247, 242);">
+    <div data-dc-tpl="49" style="max-width: 1360px; margin: 0px auto; padding: 64px 40px; display: flex; flex-wrap: wrap; gap: 48px;">
+      <div data-dc-tpl="50" style="flex: 1 1 520px; min-width: 0px;">
+        <h2 data-dc-tpl="51" class="gcs-reveal" style="margin: 0px; font-size: 48px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; color: rgb(7, 22, 14);">More than machines</h2>
+        <p data-dc-tpl="52" style="margin: 16px 0px 0px; font-size: 17px; line-height: 1.7; color: rgb(52, 70, 59);">We run our own import setup for the latest photocopiers and printers in bulk, to meet the demand of Pakistan's corporate sector. Our document solutions are also offered under the Document Service Plan (DSP) and Document Assurance Plan (DAP).</p>
+        <p data-dc-tpl="53" style="margin: 14px 0px 0px; font-size: 17px; line-height: 1.7; color: rgb(52, 70, 59);">Beyond machine rental, we provide internet-based wide-format CAD/CAM engineering copier solutions, with full support for machine monitoring, PaperCut and scanning software. We also digitise documents to preserve an organisation's historical records.</p>
+      </div>
+      <div data-dc-tpl="54" style="flex: 1 1 400px; min-width: 0px;">
+        <h3 data-dc-tpl="55" style="margin: 0px; font-size: 18px; font-weight: 800; color: rgb(7, 22, 14);">Brands we sell and maintain</h3>
+        <p data-dc-tpl="56" style="margin: 6px 0px 0px; font-size: 14px; color: rgb(74, 90, 80);">Also Gestetner, Sindoh, Nashuatec and Rex Rotary.</p>
+        <div data-dc-tpl="57" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 12px;">
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/fe307ceb514fd5451dc6c7ad0cfeff07.png" alt="Canon" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/c93a4c5b050de160d4d7ee87b9d921b4.png" alt="Kyocera" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/5e151409ea419cba7f49c720c7abf7ac.png" alt="Konica Minolta" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/2afd77f91cc922eeb58ec595792d4f65.png" alt="HP" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/801ad640c7ec9df92bd0917cdd20d107.png" alt="Ricoh" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/646356ced08ed0eea7dc02548d9f70d7.png" alt="Xerox" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+            <span data-dc-tpl="59" style="height: 64px; padding: 0px 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(221, 229, 218); display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="60" src="images/f0d98e8ef5c9b655b613fda6eb2428d7.png" alt="Samsung" style="max-height: 32px; max-width: 120px; object-fit: contain;"></span>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="61" style="max-width: 1360px; margin: 0px auto; padding: 64px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 24px;">
+    <div data-dc-tpl="62" style="padding: 36px; border-radius: 24px; background: rgb(1, 99, 50); color: rgb(255, 255, 255);">
+      <p data-dc-tpl="63" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(201, 227, 191);">Our mission</p>
+      <p data-dc-tpl="64" style="margin: 14px 0px 0px; font-size: 18px; line-height: 1.7;">To market premium quality office automation equipment and provide state-of-the-art document handling solutions, backed by an efficient after-sales support team of competent professionals, so that every product and service offers the best value for money.</p>
+    </div>
+    <div data-dc-tpl="65" style="padding: 36px; border-radius: 24px; background: rgb(7, 22, 14); color: rgb(255, 255, 255);">
+      <p data-dc-tpl="66" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(138, 190, 124);">Our vision</p>
+      <p data-dc-tpl="67" style="margin: 14px 0px 0px; font-size: 18px; line-height: 1.7;">To become the first-choice office automation and document solutions company, providing the most efficient and cost-effective business solutions, with total honesty in our dealings and no compromise on safety and quality.</p>
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="68" style="max-width: 1280px; margin: 0px auto; padding: 0px 32px 64px;">
+    <h2 data-dc-tpl="69" class="gcs-reveal" style="margin: 0px; font-size: 48px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; color: rgb(7, 22, 14);">Our quality policy</h2>
+    <div data-dc-tpl="70" style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 20px;">
+      
+        <div data-dc-tpl="72" class="gcs-lift gcs-reveal" style="padding: 24px; border-radius: 24px; background: rgb(244, 247, 242);">
+          <strong data-dc-tpl="73" style="display: block; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">Quality is our culture</span></strong>
+          <p data-dc-tpl="74" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(52, 70, 59);"><span class="sc-interp">A constant part of every decision, driving continual improvement.</span></p>
+        </div>
+      
+        <div data-dc-tpl="72" class="gcs-lift gcs-reveal" style="padding: 24px; border-radius: 24px; background: rgb(244, 247, 242);">
+          <strong data-dc-tpl="73" style="display: block; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">Customer-first support</span></strong>
+          <p data-dc-tpl="74" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(52, 70, 59);"><span class="sc-interp">Professional staff shaping support around each customer’s needs.</span></p>
+        </div>
+      
+        <div data-dc-tpl="72" class="gcs-lift gcs-reveal" style="padding: 24px; border-radius: 24px; background: rgb(244, 247, 242);">
+          <strong data-dc-tpl="73" style="display: block; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">Continuous improvement</span></strong>
+          <p data-dc-tpl="74" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(52, 70, 59);"><span class="sc-interp">Proactively improving our daily systems and procedures.</span></p>
+        </div>
+      
+        <div data-dc-tpl="72" class="gcs-lift gcs-reveal" style="padding: 24px; border-radius: 24px; background: rgb(244, 247, 242);">
+          <strong data-dc-tpl="73" style="display: block; font-size: 18px; color: rgb(7, 22, 14);"><span class="sc-interp">International standards</span></strong>
+          <p data-dc-tpl="74" style="margin: 8px 0px 0px; font-size: 15px; line-height: 1.6; color: rgb(52, 70, 59);"><span class="sc-interp">Adhering to standards, regulations and laws, and measuring our performance.</span></p>
+        </div>
+      
+    </div>
+  </section>
+
+  
+  <section data-dc-tpl="75" style="background: rgb(244, 247, 242);">
+    <div data-dc-tpl="76" style="max-width: 1360px; margin: 0px auto; padding: 96px 40px;">
+      <div data-dc-tpl="77" class="gcs-reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px;">
+        <div data-dc-tpl="78">
+          <p data-dc-tpl="79" style="margin: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(46, 147, 55);">Global's registrations &amp; affiliations</p>
+          <h2 data-dc-tpl="80" style="margin: 12px 0px 0px; font-size: 48px; font-weight: 800; line-height: 1.05; color: rgb(7, 22, 14);">Registered, compliant<br data-dc-tpl="81">and accountable.</h2>
+        </div>
+        <p data-dc-tpl="82" style="margin: 0px; max-width: 460px; font-size: 16px; line-height: 1.6; color: rgb(74, 90, 80);">A Private Limited Company since 2016, registered with Pakistan's regulators and supported by independent tax and accounting partners.</p>
+      </div>
+      <div data-dc-tpl="83" style="margin-top: 44px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 20px;">
+        
+          <div data-dc-tpl="85" class="gcs-lift gcs-reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 30px 22px; border-radius: 24px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <span data-dc-tpl="86" style="height: 120px; width: 100%; display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="87" src="images/07be465cd5210540c1d8ee3edbfbff74.png" alt="SECP logo" style="max-height: 120px; max-width: 170px; object-fit: contain;"></span>
+            <strong data-dc-tpl="88" style="font-size: 17px; color: rgb(7, 22, 14);"><span class="sc-interp">SECP</span></strong>
+            <span data-dc-tpl="89" style="font-size: 14px; line-height: 1.5; color: rgb(74, 90, 80);"><span class="sc-interp">Incorporated as a Private Limited Company, July 2016</span></span>
+          </div>
+        
+          <div data-dc-tpl="85" class="gcs-lift gcs-reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 30px 22px; border-radius: 24px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <span data-dc-tpl="86" style="height: 120px; width: 100%; display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="87" src="images/f1d94f4428932983efb55dfde91410ef.png" alt="FBR Pakistan logo" style="max-height: 120px; max-width: 170px; object-fit: contain;"></span>
+            <strong data-dc-tpl="88" style="font-size: 17px; color: rgb(7, 22, 14);"><span class="sc-interp">FBR Pakistan</span></strong>
+            <span data-dc-tpl="89" style="font-size: 14px; line-height: 1.5; color: rgb(74, 90, 80);"><span class="sc-interp">Registered with the Federal Board of Revenue</span></span>
+          </div>
+        
+          <div data-dc-tpl="85" class="gcs-lift gcs-reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 30px 22px; border-radius: 24px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <span data-dc-tpl="86" style="height: 120px; width: 100%; display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="87" src="images/763bc9b171a4a83e270a6e3dd75fe7a8.png" alt="Pakistan Customs logo" style="max-height: 120px; max-width: 170px; object-fit: contain;"></span>
+            <strong data-dc-tpl="88" style="font-size: 17px; color: rgb(7, 22, 14);"><span class="sc-interp">Pakistan Customs</span></strong>
+            <span data-dc-tpl="89" style="font-size: 14px; line-height: 1.5; color: rgb(74, 90, 80);"><span class="sc-interp">Registered for importing machines in bulk</span></span>
+          </div>
+        
+          <div data-dc-tpl="85" class="gcs-lift gcs-reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 30px 22px; border-radius: 24px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <span data-dc-tpl="86" style="height: 120px; width: 100%; display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="87" src="images/e90d7020c916974044c4ad3efb4f629b.png" alt="Softax logo" style="max-height: 120px; max-width: 170px; object-fit: contain;"></span>
+            <strong data-dc-tpl="88" style="font-size: 17px; color: rgb(7, 22, 14);"><span class="sc-interp">Softax</span></strong>
+            <span data-dc-tpl="89" style="font-size: 14px; line-height: 1.5; color: rgb(74, 90, 80);"><span class="sc-interp">Real-time taxation support</span></span>
+          </div>
+        
+          <div data-dc-tpl="85" class="gcs-lift gcs-reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 30px 22px; border-radius: 24px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+            <span data-dc-tpl="86" style="height: 120px; width: 100%; display: flex; align-items: center; justify-content: center;"><img data-dc-tpl="87" src="images/1af31db966d5a990a82a76f418b5ae1e.png" alt="Ishtiaq Rana &amp; Co. logo" style="max-height: 120px; max-width: 170px; object-fit: contain;"></span>
+            <strong data-dc-tpl="88" style="font-size: 17px; color: rgb(7, 22, 14);"><span class="sc-interp">Ishtiaq Rana &amp; Co.</span></strong>
+            <span data-dc-tpl="89" style="font-size: 14px; line-height: 1.5; color: rgb(74, 90, 80);"><span class="sc-interp">Chartered Accountants</span></span>
+          </div>
+        
+      </div>
+    </div>
+  </section>
+
+  
+  <footer data-dc-tpl="90" style="background: rgb(4, 13, 8); color: rgba(255, 255, 255, 0.65); font-size: 14px;">
+    <div data-dc-tpl="91" style="max-width: 1360px; margin: 0px auto; padding: 72px 40px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 40px;">
+      <div data-dc-tpl="92" style="display: flex; flex-direction: column; gap: 16px;">
+        <span data-dc-tpl="93" style="display: flex; align-items: center; gap: 12px;">
+          <img data-dc-tpl="94" src="images/bfb307b4998742d2dac945e0ab66a954.svg" alt="GCS logo" style="width: 52px; height: 52px; filter: drop-shadow(rgba(138, 190, 124, 0.35) 0px 4px 14px);">
+          <strong data-dc-tpl="95" style="color: rgb(255, 255, 255); font-size: 15px; letter-spacing: 0.02em;"><span data-dc-tpl="96" class="gcs-brand">GLOBAL <span data-dc-tpl="97" style="color: rgb(138, 190, 124);">COMMUNICATION</span> SYSTEM</span></strong>
+        </span>
+        <span data-dc-tpl="98" style="line-height: 1.7;">Office automation and document solutions in Pakistan since 1995. PaperCut Certified Authorized Solution Center.</span>
+      </div>
+      <div data-dc-tpl="99" style="display: flex; flex-direction: column; gap: 12px;">
+        <strong data-dc-tpl="100" style="color: rgb(255, 255, 255); font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;">Company</strong>
+        <a data-dc-tpl="101" href="Phone-About.dc.html" style="color: rgba(255, 255, 255, 0.65);">About us</a>
+        <a data-dc-tpl="102" href="Phone-Clients.dc.html" style="color: rgba(255, 255, 255, 0.65);">Clients &amp; achievements</a>
+        <a data-dc-tpl="103" href="Phone-Contact.dc.html" style="color: rgba(255, 255, 255, 0.65);">Contact</a>
+        <a data-dc-tpl="104" href="Main.dc.html" style="color: rgba(255, 255, 255, 0.65);">Online shop</a>
+        <a data-dc-tpl="105" href="Site-Policies.dc.html" style="color: rgba(255, 255, 255, 0.65);">Policies &amp; terms</a>
+      </div>
+      <div data-dc-tpl="106" style="display: flex; flex-direction: column; gap: 12px;">
+        <strong data-dc-tpl="107" style="color: rgb(255, 255, 255); font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;">Solutions</strong>
+        <a data-dc-tpl="108" href="Phone-PaperCut.dc.html" style="color: rgba(255, 255, 255, 0.65);">PaperCut software</a>
+        <a data-dc-tpl="109" href="Phone-Services.dc.html" style="color: rgba(255, 255, 255, 0.65);">Sales &amp; rental</a>
+        <a data-dc-tpl="110" href="Phone-Services.dc.html" style="color: rgba(255, 255, 255, 0.65);">Maintenance</a>
+        <a data-dc-tpl="111" href="Phone-Services.dc.html" style="color: rgba(255, 255, 255, 0.65);">Bulk printing &amp; scanning</a>
+      </div>
+      <div data-dc-tpl="112" style="display: flex; flex-direction: column; gap: 12px;">
+        <strong data-dc-tpl="113" style="color: rgb(255, 255, 255); font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;">Head office</strong>
+        <span data-dc-tpl="114">House No. 19-A, 3 Jinnah Park, Gulberg II, Lahore</span>
+        <span data-dc-tpl="115">+92-42-35759711 · 35759683 · 35779077</span>
+        <span data-dc-tpl="116">Fax +92-42-35779075</span>
+        <a data-dc-tpl="117" href="mailto:info@gcsho.com" style="color: rgb(138, 190, 124);">info@gcsho.com</a>
+      </div>
+    </div>
+    <div data-dc-tpl="118" style="max-width: 1360px; margin: 0px auto; padding: 22px 40px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 12px; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.45);">
+      <span data-dc-tpl="119">© Global Communication System (Pvt) Ltd</span>
+      <span data-dc-tpl="120">gcsho.com.pk</span>
+    </div>
+  </footer>
+  
+  <a data-dc-tpl="121" href="https://wa.me/923000000000?text=Hi%20GCS%2C%20I%20have%20a%20question." class="gcs-wa" aria-label="Chat with GCS on WhatsApp">
+    <span data-dc-tpl="122" class="gcs-wa-label"><strong data-dc-tpl="123">Chat with GCS</strong><span data-dc-tpl="124">on WhatsApp</span></span>
+    <span data-dc-tpl="125" class="gcs-wa-btn">
+      <svg data-dc-tpl="126" width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path data-dc-tpl="127" fill="#ffffff" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+    </span>
+  </a></div></div></div>
+
+
+
+</body></html>

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>GCS Admin Add Product</title>
+<style>x-dc{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-dc-tpl="1"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" data-dc-tpl="2"><link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" data-dc-tpl="3"><style data-dc-tpl="4">
+body{margin:0;background:#f4f7f2}
+a{color:#016332;text-decoration:none}a:hover{color:#014a26}
+h1,h2,h3{font-family:Urbanist,Inter,sans-serif}
+.adm-nav a{transition:background .2s,color .2s}
+.adm-nav a:hover{background:rgba(255,255,255,0.08);color:#ffffff}
+.adm-row:hover{background:#f7faf6}
+.adm-bar{transition:opacity .2s}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media (max-width: 900px){
+  .adm-root{flex-direction:column !important}
+  .adm-side{display:flex !important;width:auto !important;flex-direction:row !important;flex-wrap:nowrap;align-items:center;gap:12px;overflow-x:auto;padding:12px 14px !important}
+  .adm-side nav{flex-direction:row !important;margin-top:0 !important;flex:none}
+  .adm-side nav a{flex:none;white-space:nowrap}
+  .adm-side > p, .adm-side > div:last-child{display:none !important}
+  main{padding:20px 16px 40px !important}
+}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="Admin-Product-New"><div data-dc-tpl="5" class="adm-root" style="font-family: Inter, system-ui, sans-serif; color: rgb(19, 36, 26); background: rgb(244, 247, 242); display: flex; min-height: 100vh;">
+
+  
+  <aside data-dc-tpl="6" class="adm-side" style="flex: 0 0 auto; width: 264px; background: linear-gradient(rgb(5, 17, 11) 0%, rgb(10, 46, 27) 60%, rgb(15, 90, 48) 100%); color: rgb(201, 219, 195); display: flex; flex-direction: column; padding: 26px 18px;">
+    <a data-dc-tpl="7" href="Admin-Overview.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 0px 8px; color: rgb(255, 255, 255);">
+      <img data-dc-tpl="8" src="images/bfb307b4998742d2dac945e0ab66a954.svg" alt="GCS logo" style="width: 42px; height: 42px;">
+      <span data-dc-tpl="9" style="display: flex; flex-direction: column; line-height: 1.2;">
+        <strong data-dc-tpl="10" style="font-family: Urbanist, Inter, sans-serif; font-size: 17px; letter-spacing: 0.06em;">GCS ADMIN</strong>
+        <span data-dc-tpl="11" style="font-size: 12px; color: rgba(255, 255, 255, 0.55);">Shop &amp; website</span>
+      </span>
+    </a>
+    <nav data-dc-tpl="12" class="adm-nav" aria-label="Admin" style="margin-top: 34px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 500;">
+      <a data-dc-tpl="13" href="Admin-Overview.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="14" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="15" d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"></path></svg>Overview</a>
+      <a data-dc-tpl="16" href="Admin-Orders.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="17" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="18" d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6"></path></svg>Orders<span data-dc-tpl="19" style="margin-left: auto; padding: 2px 8px; border-radius: 999px; background: rgb(138, 190, 124); color: rgb(5, 17, 11); font-size: 12px; font-weight: 700;">6</span></a>
+      <a data-dc-tpl="20" href="Admin-Products.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; background: rgba(138, 190, 124, 0.18); color: rgb(255, 255, 255); font-weight: 600;"><svg data-dc-tpl="21" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8abe7c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="22" d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8"></path></svg>Products</a>
+      <a data-dc-tpl="23" href="Admin-Leads.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="24" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="25" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>Quotes &amp; leads<span data-dc-tpl="26" style="margin-left: auto; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); color: rgb(255, 255, 255); font-size: 12px; font-weight: 700;">9</span></a>
+      <a data-dc-tpl="27" href="Admin-Customers.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="28" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="29" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path></svg>Customers</a>
+      <a data-dc-tpl="30" href="Admin-Service.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="31" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="32" d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"></path></svg>Service requests</a>
+    </nav>
+    <p data-dc-tpl="33" style="margin: 28px 14px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.4);">Website</p>
+    <nav data-dc-tpl="34" class="adm-nav" aria-label="Website" style="display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 500;">
+      <a data-dc-tpl="35" href="Site-Home.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="36" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="37" d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path></svg>View website</a>
+      <a data-dc-tpl="38" href="Admin-Settings.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="39" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="40" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>Settings</a>
+    </nav>
+    <div data-dc-tpl="41" style="margin-top: auto; padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; gap: 12px;">
+      <span data-dc-tpl="42" style="width: 40px; height: 40px; border-radius: 50%; background: rgb(138, 190, 124); color: rgb(5, 17, 11); display: flex; align-items: center; justify-content: center; font-weight: 800;">SA</span>
+      <span data-dc-tpl="43" style="display: flex; flex-direction: column; line-height: 1.3;"><strong data-dc-tpl="44" style="font-size: 14px; color: rgb(255, 255, 255);">Sales Admin</strong><span data-dc-tpl="45" style="font-size: 12px; color: rgba(255, 255, 255, 0.55);">Head office, Lahore</span></span>
+    </div>
+  </aside>
+
+  <main data-dc-tpl="46" style="flex: 1 1 0%; min-width: 0px; padding: 28px 36px 48px;">
+    <nav data-dc-tpl="47" aria-label="Breadcrumb" style="font-size: 13px; color: rgb(93, 107, 98);"><a data-dc-tpl="48" href="Admin-Products.dc.html">Products</a> / New product</nav>
+    <h1 data-dc-tpl="49" style="margin: 4px 0px 0px; font-size: 34px; font-weight: 800; color: rgb(7, 22, 14); letter-spacing: -0.02em;">Add product</h1>
+    
+    <form data-dc-tpl="51" novalidate="novalidate" style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start;">
+      <div data-dc-tpl="52" style="flex: 999 1 620px; min-width: 0px; display: flex; flex-direction: column; gap: 18px;">
+        
+        <section data-dc-tpl="57" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <h2 data-dc-tpl="58" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Basics</h2>
+          <div data-dc-tpl="59" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px;">
+            <label data-dc-tpl="60" for="np-brand" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Brand<select data-dc-tpl="61" id="np-brand" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"><option data-dc-tpl="63" value="Canon"><span class="sc-interp">Canon</span></option><option data-dc-tpl="63" value="Kyocera"><span class="sc-interp">Kyocera</span></option><option data-dc-tpl="63" value="Konica Minolta"><span class="sc-interp">Konica Minolta</span></option><option data-dc-tpl="63" value="HP"><span class="sc-interp">HP</span></option><option data-dc-tpl="63" value="Ricoh"><span class="sc-interp">Ricoh</span></option><option data-dc-tpl="63" value="Other"><span class="sc-interp">Other</span></option></select></label>
+            <label data-dc-tpl="64" for="np-model" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Model<input data-dc-tpl="65" id="np-model" type="text" placeholder="e.g. imageRUNNER ADVANCE C3530i" value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"></label>
+            <label data-dc-tpl="66" for="np-cat" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Category<select data-dc-tpl="67" id="np-cat" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"><option data-dc-tpl="69" value="colour"><span class="sc-interp">Colour photocopier</span></option><option data-dc-tpl="69" value="mono"><span class="sc-interp">Mono photocopier</span></option><option data-dc-tpl="69" value="scanner"><span class="sc-interp">Document scanner</span></option><option data-dc-tpl="69" value="printer"><span class="sc-interp">Printer</span></option></select></label>
+            <label data-dc-tpl="70" for="np-cond" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Condition<select data-dc-tpl="71" id="np-cond" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"><option data-dc-tpl="73" value="New"><span class="sc-interp">New</span></option><option data-dc-tpl="73" value="Refurbished"><span class="sc-interp">Refurbished</span></option><option data-dc-tpl="73" value="Used"><span class="sc-interp">Used</span></option></select></label>
+            <label data-dc-tpl="74" for="np-size" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Max paper size<select data-dc-tpl="75" id="np-size" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"><option data-dc-tpl="76">A3</option><option data-dc-tpl="77">A4</option></select></label>
+            <label data-dc-tpl="78" for="np-sku" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">SKU / stock code<input data-dc-tpl="79" id="np-sku" type="text" readonly="readonly" value="GCS-CA-XXXX" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; width: 100%; box-sizing: border-box; background: rgb(238, 243, 236); color: rgb(74, 90, 80);"></label>
+            <label data-dc-tpl="80" for="np-lead" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px; grid-column: 1 / -1;">One-line description (shown under the name)<input data-dc-tpl="81" id="np-lead" type="text" maxlength="140" placeholder="e.g. A3 colour copier for busy offices: print, copy, scan and send." value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"><span data-dc-tpl="82" style="font-size: 12px; font-weight: 400; color: rgb(93, 107, 98); font-variant-numeric: tabular-nums;"><span class="sc-interp">0</span> / 140 characters</span></label>
+          </div>
+        </section>
+
+        <section data-dc-tpl="83" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <h2 data-dc-tpl="84" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Photos</h2>
+          <p data-dc-tpl="85" style="margin: 4px 0px 0px; font-size: 13px; color: rgb(93, 107, 98);">Use a clean photo on a white background, at least 1200 px wide. The first photo is the main one.</p>
+          <div data-dc-tpl="86" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px;">
+            <label data-dc-tpl="87" for="np-photo" style="position: relative; height: 170px; border-radius: 16px; border: 2px dashed rgb(157, 180, 151); background: rgb(250, 252, 249); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; font-size: 13px; font-weight: 600; color: rgb(1, 99, 50); cursor: pointer; overflow: hidden;">
+              
+              <svg data-dc-tpl="90" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="91" d="M12 5v14M5 12h14"></path></svg>
+              Main photo
+              <input data-dc-tpl="92" id="np-photo" type="file" accept="image/png,image/jpeg,image/webp" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
+            </label>
+            
+              <label data-dc-tpl="94" for="np-p2" style="position: relative; height: 170px; border-radius: 16px; border: 1px dashed rgb(196, 209, 192); background: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgb(93, 107, 98); cursor: pointer;"><span class="sc-interp">Side view</span><input data-dc-tpl="95" id="np-p2" type="file" accept="image/*" style="position: absolute; width: 1px; height: 1px; opacity: 0;"></label>
+            
+              <label data-dc-tpl="94" for="np-p3" style="position: relative; height: 170px; border-radius: 16px; border: 1px dashed rgb(196, 209, 192); background: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgb(93, 107, 98); cursor: pointer;"><span class="sc-interp">Touchscreen</span><input data-dc-tpl="95" id="np-p3" type="file" accept="image/*" style="position: absolute; width: 1px; height: 1px; opacity: 0;"></label>
+            
+              <label data-dc-tpl="94" for="np-p4" style="position: relative; height: 170px; border-radius: 16px; border: 1px dashed rgb(196, 209, 192); background: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgb(93, 107, 98); cursor: pointer;"><span class="sc-interp">In an office</span><input data-dc-tpl="95" id="np-p4" type="file" accept="image/*" style="position: absolute; width: 1px; height: 1px; opacity: 0;"></label>
+            
+          </div>
+        </section>
+
+        <section data-dc-tpl="96" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <h2 data-dc-tpl="97" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Price</h2>
+          <label data-dc-tpl="98" style="margin-top: 14px; display: flex; align-items: center; gap: 10px; font-size: 14px;"><input data-dc-tpl="99" id="np-req" type="checkbox" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);">Show “Price on request” instead of a price</label>
+          
+            <div data-dc-tpl="101" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px;">
+              <label data-dc-tpl="102" for="np-price" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Selling price (Rs)<input data-dc-tpl="103" id="np-price" type="text" inputmode="numeric" placeholder="e.g. 40,000" value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"></label>
+              <label data-dc-tpl="104" for="np-was" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Regular price (Rs, optional)<input data-dc-tpl="105" id="np-was" type="text" inputmode="numeric" placeholder="Only if on sale" value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"></label>
+              <label data-dc-tpl="106" for="np-rent" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Monthly rental (Rs, optional)<input data-dc-tpl="107" id="np-rent" type="text" inputmode="numeric" placeholder="e.g. 8,500" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"></label>
+            </div>
+            
+            
+              <label data-dc-tpl="111" style="margin-top: 14px; display: flex; align-items: center; gap: 10px; font-size: 14px;"><input data-dc-tpl="112" id="np-both" type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);">Available in Mono or Colour at the same price</label>
+            
+          
+          <div data-dc-tpl="113" style="margin-top: 14px; display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgb(253, 243, 220); color: rgb(92, 66, 0); font-size: 13px; line-height: 1.5;"><span data-dc-tpl="114" aria-hidden="true" style="font-weight: 800;">◷</span><span data-dc-tpl="115">You’re signed in as <strong data-dc-tpl="116">Sales</strong>. New prices go to the Owner for approval before customers see them.</span></div>
+        </section>
+
+        <section data-dc-tpl="117" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <div data-dc-tpl="118" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+            <div data-dc-tpl="119"><h2 data-dc-tpl="120" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Specifications</h2><p data-dc-tpl="121" style="margin: 4px 0px 0px; font-size: 13px; color: rgb(93, 107, 98);">Filled in for a <span class="sc-interp">colour photocopier</span>. Edit the values or add your own rows.</p></div>
+            <button data-dc-tpl="122" type="button" style="height: 40px; padding: 0px 16px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">+ Add row</button>
+          </div>
+          <div data-dc-tpl="123" style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+            
+              <div data-dc-tpl="125" style="display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 1.6fr) 44px; gap: 8px; align-items: center;">
+                <input data-dc-tpl="126" type="text" aria-label="Specification name" id="np-sl0" placeholder="e.g. Print speed" value="Type" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box; font-weight: 600;">
+                <input data-dc-tpl="127" type="text" aria-label="Type value" id="np-sv0" placeholder="Value" value="A3 colour multifunction copier" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;">
+                <button data-dc-tpl="128" type="button" aria-label="Remove row" style="height: 44px; border-radius: 12px; border: 1px solid rgb(227, 235, 224); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 18px; color: rgb(161, 44, 44); cursor: pointer;">×</button>
+              </div>
+            
+              <div data-dc-tpl="125" style="display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 1.6fr) 44px; gap: 8px; align-items: center;">
+                <input data-dc-tpl="126" type="text" aria-label="Specification name" id="np-sl1" placeholder="e.g. Print speed" value="Functions" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box; font-weight: 600;">
+                <input data-dc-tpl="127" type="text" aria-label="Functions value" id="np-sv1" placeholder="Value" value="Print, copy, scan, send" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;">
+                <button data-dc-tpl="128" type="button" aria-label="Remove row" style="height: 44px; border-radius: 12px; border: 1px solid rgb(227, 235, 224); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 18px; color: rgb(161, 44, 44); cursor: pointer;">×</button>
+              </div>
+            
+              <div data-dc-tpl="125" style="display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 1.6fr) 44px; gap: 8px; align-items: center;">
+                <input data-dc-tpl="126" type="text" aria-label="Specification name" id="np-sl2" placeholder="e.g. Print speed" value="Print speed" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box; font-weight: 600;">
+                <input data-dc-tpl="127" type="text" aria-label="Print speed value" id="np-sv2" placeholder="e.g. Up to 35 pages per minute" value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;">
+                <button data-dc-tpl="128" type="button" aria-label="Remove row" style="height: 44px; border-radius: 12px; border: 1px solid rgb(227, 235, 224); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 18px; color: rgb(161, 44, 44); cursor: pointer;">×</button>
+              </div>
+            
+              <div data-dc-tpl="125" style="display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 1.6fr) 44px; gap: 8px; align-items: center;">
+                <input data-dc-tpl="126" type="text" aria-label="Specification name" id="np-sl3" placeholder="e.g. Print speed" value="Max paper size" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box; font-weight: 600;">
+                <input data-dc-tpl="127" type="text" aria-label="Max paper size value" id="np-sv3" placeholder="Value" value="A3" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;">
+                <button data-dc-tpl="128" type="button" aria-label="Remove row" style="height: 44px; border-radius: 12px; border: 1px solid rgb(227, 235, 224); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 18px; color: rgb(161, 44, 44); cursor: pointer;">×</button>
+              </div>
+            
+              <div data-dc-tpl="125" style="display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 1.6fr) 44px; gap: 8px; align-items: center;">
+                <input data-dc-tpl="126" type="text" aria-label="Specification name" id="np-sl4" placeholder="e.g. Print speed" value="Double-sided printing" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box; font-weight: 600;">
+                <input data-dc-tpl="127" type="text" aria-label="Double-sided printing value" id="np-sv4" placeholder="Value" value="Automatic" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;">
+                <button data-dc-tpl="128" type="button" aria-label="Remove row" style="height: 44px; border-radius: 12px; border: 1px solid rgb(227, 235, 224); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 18px; color: rgb(161, 44, 44); cursor: pointer;">×</button>
+              </div>
+            
+              <div data-dc-tpl="125" style="display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 1.6fr) 44px; gap: 8px; align-items: center;">
+                <input data-dc-tpl="126" type="text" aria-label="Specification name" id="np-sl5" placeholder="e.g. Print speed" value="Connectivity" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box; font-weight: 600;">
+                <input data-dc-tpl="127" type="text" aria-label="Connectivity value" id="np-sv5" placeholder="Value" value="Network (Ethernet), USB" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;">
+                <button data-dc-tpl="128" type="button" aria-label="Remove row" style="height: 44px; border-radius: 12px; border: 1px solid rgb(227, 235, 224); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 18px; color: rgb(161, 44, 44); cursor: pointer;">×</button>
+              </div>
+            
+          </div>
+        </section>
+
+        <section data-dc-tpl="129" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <h2 data-dc-tpl="130" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Stock and add-ons</h2>
+          <div data-dc-tpl="131" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px;">
+            <label data-dc-tpl="132" for="np-qty" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Units in stock<input data-dc-tpl="133" id="np-qty" type="number" min="0" value="1" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"></label>
+            <label data-dc-tpl="134" for="np-low" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Warn me when stock falls to<input data-dc-tpl="135" id="np-low" type="number" min="0" value="2" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"></label>
+            <label data-dc-tpl="136" for="np-warr" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0px;">Warranty<select data-dc-tpl="137" id="np-warr" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255); width: 100%; box-sizing: border-box;"><option data-dc-tpl="138">1 year</option><option data-dc-tpl="139">6 months</option><option data-dc-tpl="140">3 months</option><option data-dc-tpl="141">No warranty</option></select></label>
+          </div>
+          <p data-dc-tpl="142" style="margin: 16px 0px 8px; font-size: 13px; font-weight: 600;">Add-ons offered on the product page</p>
+          <div data-dc-tpl="143" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: 14px;">
+            
+              <label data-dc-tpl="145" style="display: flex; align-items: center; gap: 8px;"><input data-dc-tpl="146" id="np-a0" type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);"><span class="sc-interp">1-year service contract · price on request</span></label>
+            
+              <label data-dc-tpl="145" style="display: flex; align-items: center; gap: 8px;"><input data-dc-tpl="146" id="np-a1" type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);"><span class="sc-interp">Extra toner set · price on request</span></label>
+            
+              <label data-dc-tpl="145" style="display: flex; align-items: center; gap: 8px;"><input data-dc-tpl="146" id="np-a2" type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);"><span class="sc-interp">Staff training session · price on request</span></label>
+            
+          </div>
+        </section>
+      </div>
+
+      <aside data-dc-tpl="147" style="flex: 1 1 300px; min-width: 0px; display: flex; flex-direction: column; gap: 18px;">
+        <section data-dc-tpl="148" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <p data-dc-tpl="149" style="margin: 0px; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(46, 147, 55);">Shop preview</p>
+          <div data-dc-tpl="150" style="margin-top: 12px; border: 1px solid rgb(221, 229, 218); border-radius: 22px; overflow: hidden;">
+            <div data-dc-tpl="151" style="position: relative; height: 190px; background: rgb(243, 247, 241); display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgb(93, 107, 98);">
+              No photo yet
+              
+              
+              
+            </div>
+            <div data-dc-tpl="158" style="padding: 16px; display: flex; flex-direction: column; gap: 6px;">
+              <span data-dc-tpl="159" style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: rgb(1, 99, 50);"><span class="sc-interp">Canon</span> · <span class="sc-interp">colour photocopier</span></span>
+              <strong data-dc-tpl="160" style="font-size: 17px; color: rgb(7, 22, 14); line-height: 1.3;"><span class="sc-interp">Canon [model name]</span></strong>
+              <span data-dc-tpl="161" style="font-size: 13px; color: rgb(74, 90, 80); line-height: 1.45;"><span class="sc-interp">Your one-line description appears here.</span></span>
+              <span data-dc-tpl="162" style="display: flex; align-items: baseline; gap: 8px;"><strong data-dc-tpl="163" style="font-size: 20px; color: rgb(7, 22, 14);"><span class="sc-interp">Rs —</span></strong></span>
+            </div>
+          </div>
+          <p data-dc-tpl="166" style="margin: 12px 0px 0px; font-size: 12px; color: rgb(93, 107, 98); word-break: break-all;">Page address: gcsho.com.pk/shop/<strong data-dc-tpl="167" style="color: rgb(19, 36, 26);"><span class="sc-interp">new-product</span></strong></p>
+        </section>
+        <section data-dc-tpl="168" style="padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <h2 data-dc-tpl="169" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Visibility</h2>
+          <div data-dc-tpl="170" style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+            <label data-dc-tpl="171" style="display: flex; align-items: center; gap: 10px;"><input data-dc-tpl="172" id="np-feat" type="checkbox" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);">Feature on the shop homepage</label>
+            <label data-dc-tpl="173" style="display: flex; align-items: center; gap: 10px;"><input data-dc-tpl="174" id="np-quote" type="checkbox" checked="" style="width: 18px; height: 18px; accent-color: rgb(1, 99, 50);">Show “Request business quote” button</label>
+          </div>
+        </section>
+        <div data-dc-tpl="175" style="display: flex; flex-direction: column; gap: 10px;">
+          <button data-dc-tpl="176" type="submit" style="height: 50px; border-radius: 999px; border: 0px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 15px; font-weight: 700; cursor: pointer;">Send for approval and publish</button>
+          <button data-dc-tpl="177" type="button" style="height: 46px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">Save as draft</button>
+          <a data-dc-tpl="178" href="Admin-Products.dc.html" style="display: flex; align-items: center; justify-content: center; height: 40px; color: rgb(93, 107, 98); font-size: 14px; font-weight: 600;">Cancel</a>
+        </div>
+      </aside>
+    </form>
+    
+    
+  </main></div></div></div>
+
+
+
+</body></html>

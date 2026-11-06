@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>GCS Admin Staff &amp; Access</title>
+<style>x-dc{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-dc-tpl="1"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" data-dc-tpl="2"><link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" data-dc-tpl="3"><style data-dc-tpl="4">
+body{margin:0;background:#f4f7f2}
+a{color:#016332;text-decoration:none}a:hover{color:#014a26}
+h1,h2,h3{font-family:Urbanist,Inter,sans-serif}
+.adm-nav a{transition:background .2s,color .2s}
+.adm-nav a:hover{background:rgba(255,255,255,0.08);color:#ffffff}
+.adm-row:hover{background:#f7faf6}
+.adm-bar{transition:opacity .2s}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media (max-width: 900px){
+  .adm-root{flex-direction:column !important}
+  .adm-side{display:flex !important;width:auto !important;flex-direction:row !important;flex-wrap:nowrap;align-items:center;gap:12px;overflow-x:auto;padding:12px 14px !important}
+  .adm-side nav{flex-direction:row !important;margin-top:0 !important;flex:none}
+  .adm-side nav a{flex:none;white-space:nowrap}
+  .adm-side > p, .adm-side > div:last-child{display:none !important}
+  main{padding:20px 16px 40px !important}
+}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="Admin-Staff"><div data-dc-tpl="5" class="adm-root" style="font-family: Inter, system-ui, sans-serif; color: rgb(19, 36, 26); background: rgb(244, 247, 242); display: flex; min-height: 100vh;">
+
+  
+  <aside data-dc-tpl="6" class="adm-side" style="flex: 0 0 auto; width: 264px; background: linear-gradient(rgb(5, 17, 11) 0%, rgb(10, 46, 27) 60%, rgb(15, 90, 48) 100%); color: rgb(201, 219, 195); display: flex; flex-direction: column; padding: 26px 18px;">
+    <a data-dc-tpl="7" href="Admin-Overview.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 0px 8px; color: rgb(255, 255, 255);">
+      <img data-dc-tpl="8" src="images/bfb307b4998742d2dac945e0ab66a954.svg" alt="GCS logo" style="width: 42px; height: 42px;">
+      <span data-dc-tpl="9" style="display: flex; flex-direction: column; line-height: 1.2;">
+        <strong data-dc-tpl="10" style="font-family: Urbanist, Inter, sans-serif; font-size: 17px; letter-spacing: 0.06em;">GCS ADMIN</strong>
+        <span data-dc-tpl="11" style="font-size: 12px; color: rgba(255, 255, 255, 0.55);">Shop &amp; website</span>
+      </span>
+    </a>
+    <nav data-dc-tpl="12" class="adm-nav" aria-label="Admin" style="margin-top: 34px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 500;">
+      <a data-dc-tpl="13" href="Admin-Overview.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="14" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="15" d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"></path></svg>Overview</a>
+      <a data-dc-tpl="16" href="Admin-Orders.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="17" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="18" d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6"></path></svg>Orders<span data-dc-tpl="19" style="margin-left: auto; padding: 2px 8px; border-radius: 999px; background: rgb(138, 190, 124); color: rgb(5, 17, 11); font-size: 12px; font-weight: 700;">6</span></a>
+      <a data-dc-tpl="20" href="Admin-Products.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="21" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="22" d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8"></path></svg>Products</a>
+      <a data-dc-tpl="23" href="Admin-Leads.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="24" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="25" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>Quotes &amp; leads<span data-dc-tpl="26" style="margin-left: auto; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); color: rgb(255, 255, 255); font-size: 12px; font-weight: 700;">9</span></a>
+      <a data-dc-tpl="27" href="Admin-Customers.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="28" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="29" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path></svg>Customers</a>
+      <a data-dc-tpl="30" href="Admin-Service.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="31" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="32" d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"></path></svg>Service requests</a>
+    </nav>
+    <p data-dc-tpl="33" style="margin: 28px 14px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.4);">Website</p>
+    <nav data-dc-tpl="34" class="adm-nav" aria-label="Website" style="display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 500;">
+      <a data-dc-tpl="35" href="Site-Home.dc.html" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; color: rgb(201, 219, 195);"><svg data-dc-tpl="36" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="37" d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path></svg>View website</a>
+      <a data-dc-tpl="38" href="Admin-Settings.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0px 14px; border-radius: 12px; background: rgba(138, 190, 124, 0.18); color: rgb(255, 255, 255); font-weight: 600;"><svg data-dc-tpl="39" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8abe7c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path data-dc-tpl="40" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>Settings</a>
+    </nav>
+    <div data-dc-tpl="41" style="margin-top: auto; padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; gap: 12px;">
+      <span data-dc-tpl="42" style="width: 40px; height: 40px; border-radius: 50%; background: rgb(138, 190, 124); color: rgb(5, 17, 11); display: flex; align-items: center; justify-content: center; font-weight: 800;">OW</span>
+      <span data-dc-tpl="43" style="display: flex; flex-direction: column; line-height: 1.3;"><strong data-dc-tpl="44" style="font-size: 14px; color: rgb(255, 255, 255);">Owner</strong><span data-dc-tpl="45" style="font-size: 12px; color: rgba(255, 255, 255, 0.55);">Full access</span></span>
+    </div>
+  </aside>
+
+  <main data-dc-tpl="46" style="flex: 1 1 0%; min-width: 0px; padding: 28px 36px 48px;">
+    <nav data-dc-tpl="47" aria-label="Breadcrumb" style="font-size: 13px; color: rgb(93, 107, 98);"><a data-dc-tpl="48" href="Admin-Settings.dc.html">Settings</a> / Staff &amp; access</nav>
+    <div data-dc-tpl="49" style="margin-top: 4px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div data-dc-tpl="50">
+        <h1 data-dc-tpl="51" style="margin: 0px; font-size: 34px; font-weight: 800; color: rgb(7, 22, 14); letter-spacing: -0.02em;">Staff &amp; access</h1>
+        <p data-dc-tpl="52" style="margin: 6px 0px 0px; font-size: 14px; color: rgb(93, 107, 98);">Invite people and choose exactly what each one can see and change. Only the Owner can open this page.</p>
+      </div>
+      <span data-dc-tpl="53" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;"><span class="sc-interp">3</span> active · <span class="sc-interp">1</span> invited · <span class="sc-interp">1</span> suspended</span>
+    </div>
+
+    <div data-dc-tpl="54" style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start;">
+
+      
+      <section data-dc-tpl="55" id="invite" style="flex: 999 1 620px; min-width: 0px; padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+        
+          <form data-dc-tpl="57" novalidate="novalidate" style="display: flex; flex-direction: column; gap: 22px;">
+            <div data-dc-tpl="58">
+              <h2 data-dc-tpl="59" style="margin: 0px; font-size: 22px; font-weight: 800; color: rgb(7, 22, 14);"><span class="sc-interp">Invite a staff member</span></h2>
+              <p data-dc-tpl="60" style="margin: 4px 0px 0px; font-size: 13px; color: rgb(93, 107, 98);">They get an email with a one-time link that expires in 48 hours. They set their own password and 2-step login.</p>
+            </div>
+            
+
+            <fieldset data-dc-tpl="65" style="margin: 0px; padding: 0px; border: 0px;">
+              <legend data-dc-tpl="66" style="padding: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(46, 147, 55);">1 · Person</legend>
+              <div data-dc-tpl="67" style="margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0px, 1fr)); gap: 14px;">
+                <label data-dc-tpl="68" for="st-name" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Full name<input data-dc-tpl="69" id="st-name" type="text" placeholder="e.g. Ayesha Khan" value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400;"></label>
+                <label data-dc-tpl="70" for="st-email" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Work email<input data-dc-tpl="71" id="st-email" type="email" placeholder="name@gcsho.com" value="" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400;"></label>
+                <label data-dc-tpl="72" for="st-phone" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Mobile (for 2-step codes)<input data-dc-tpl="73" id="st-phone" type="tel" placeholder="+92 3XX XXXXXXX" style="height: 44px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400;"></label>
+                <label data-dc-tpl="74" for="st-branch" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Office<select data-dc-tpl="75" id="st-branch" style="height: 46px; padding: 0px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; background: rgb(255, 255, 255);"><option data-dc-tpl="76">Head office, Lahore</option><option data-dc-tpl="77">Islamabad</option><option data-dc-tpl="78">Karachi</option><option data-dc-tpl="79">Works remotely</option></select></label>
+              </div>
+            </fieldset>
+
+            <fieldset data-dc-tpl="80" style="margin: 0px; padding: 0px; border: 0px;">
+              <legend data-dc-tpl="81" style="padding: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(46, 147, 55);">2 · Role</legend>
+              <p data-dc-tpl="82" style="margin: 6px 0px 0px; font-size: 13px; color: rgb(93, 107, 98);">A role fills in the access below. You can still adjust any line.</p>
+              <div data-dc-tpl="83" role="radiogroup" aria-label="Role" style="margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px;">
+                
+                  <button data-dc-tpl="85" type="button" role="radio" aria-checked="true" style="display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px; border-radius: 14px; background: rgb(241, 247, 238); border: 2px solid rgb(1, 99, 50); font: inherit; color: rgb(19, 36, 26); cursor: pointer;">
+                    <strong data-dc-tpl="86" style="font-size: 15px;"><span class="sc-interp">Sales</span></strong>
+                    <span data-dc-tpl="87" style="font-size: 12px; color: rgb(93, 107, 98); line-height: 1.4;"><span class="sc-interp">Orders, quotes and customers</span></span>
+                  </button>
+                
+                  <button data-dc-tpl="85" type="button" role="radio" aria-checked="false" style="display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224); font: inherit; color: rgb(19, 36, 26); cursor: pointer;">
+                    <strong data-dc-tpl="86" style="font-size: 15px;"><span class="sc-interp">Service technician</span></strong>
+                    <span data-dc-tpl="87" style="font-size: 12px; color: rgb(93, 107, 98); line-height: 1.4;"><span class="sc-interp">Service requests and machines</span></span>
+                  </button>
+                
+                  <button data-dc-tpl="85" type="button" role="radio" aria-checked="false" style="display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224); font: inherit; color: rgb(19, 36, 26); cursor: pointer;">
+                    <strong data-dc-tpl="86" style="font-size: 15px;"><span class="sc-interp">Accounts</span></strong>
+                    <span data-dc-tpl="87" style="font-size: 12px; color: rgb(93, 107, 98); line-height: 1.4;"><span class="sc-interp">Payments, invoices and reports</span></span>
+                  </button>
+                
+                  <button data-dc-tpl="85" type="button" role="radio" aria-checked="false" style="display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224); font: inherit; color: rgb(19, 36, 26); cursor: pointer;">
+                    <strong data-dc-tpl="86" style="font-size: 15px;"><span class="sc-interp">Shop manager</span></strong>
+                    <span data-dc-tpl="87" style="font-size: 12px; color: rgb(93, 107, 98); line-height: 1.4;"><span class="sc-interp">Products, prices and stock</span></span>
+                  </button>
+                
+                  <button data-dc-tpl="85" type="button" role="radio" aria-checked="false" style="display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 14px; border-radius: 14px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224); font: inherit; color: rgb(19, 36, 26); cursor: pointer;">
+                    <strong data-dc-tpl="86" style="font-size: 15px;"><span class="sc-interp">Custom</span></strong>
+                    <span data-dc-tpl="87" style="font-size: 12px; color: rgb(93, 107, 98); line-height: 1.4;"><span class="sc-interp">Start with nothing and choose</span></span>
+                  </button>
+                
+              </div>
+            </fieldset>
+
+            <fieldset data-dc-tpl="88" style="margin: 0px; padding: 0px; border: 0px;">
+              <legend data-dc-tpl="89" style="padding: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(46, 147, 55);">3 · Access</legend>
+              <div data-dc-tpl="90" style="margin-top: 12px; border: 1px solid rgb(227, 235, 224); border-radius: 16px; overflow: hidden;">
+                <div data-dc-tpl="91" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; padding: 10px 16px; background: rgb(244, 247, 242); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(93, 107, 98);"><span data-dc-tpl="92">Area</span><span data-dc-tpl="93">No access · View · Edit</span></div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Orders</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">See and update shop orders</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Orders" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Quotes &amp; leads</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Business quote requests</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Quotes &amp; leads" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Customers</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Names, companies, order history</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Customers" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Customer phone numbers</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Hidden unless they need to call</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Customer phone numbers" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" disabled="" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: not-allowed; opacity: 0.35;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Products &amp; stock</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Add products, photos, stock levels</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Products &amp; stock" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Prices</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Sale and regular prices</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Prices" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Service requests</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Repair and maintenance tickets</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Service requests" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(93, 107, 98); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Payments &amp; invoices</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Mark paid, issue invoices</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Payments &amp; invoices" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(93, 107, 98); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Sales reports</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Overview charts and totals</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Sales reports" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(93, 107, 98); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+                  <div data-dc-tpl="95" style="display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid rgb(237, 241, 235);">
+                    <span data-dc-tpl="96" style="display: flex; flex-direction: column; min-width: 0px;"><strong data-dc-tpl="97" style="font-size: 14px; color: rgb(7, 22, 14);"><span class="sc-interp">Website pages</span></strong><span data-dc-tpl="98" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">Homepage banners, client logos, policies</span></span></span>
+                    <span data-dc-tpl="99" role="radiogroup" aria-label="Website pages" style="display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(238, 243, 236);">
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="true" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: rgb(93, 107, 98); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">No access</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">View</span></button>
+                      
+                        <button data-dc-tpl="101" type="button" role="radio" aria-checked="false" style="min-width: 64px; height: 34px; padding: 0px 12px; border: 0px; border-radius: 999px; background: transparent; color: rgb(52, 70, 59); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 1;"><span class="sc-interp">Edit</span></button>
+                      
+                    </span>
+                  </div>
+                
+              </div>
+            </fieldset>
+
+            <fieldset data-dc-tpl="102" style="margin: 0px; padding: 0px; border: 0px;">
+              <legend data-dc-tpl="103" style="padding: 0px; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(46, 147, 55);">4 · Safety rules</legend>
+              <div data-dc-tpl="104" style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+                <label data-dc-tpl="105" style="display: flex; align-items: flex-start; gap: 10px;"><input data-dc-tpl="106" id="st-approve" type="checkbox" checked="" style="width: 18px; height: 18px; margin-top: 1px; accent-color: rgb(1, 99, 50);"><span data-dc-tpl="107"><strong data-dc-tpl="108">Price changes need Owner approval</strong><span data-dc-tpl="109" style="display: block; font-size: 12px; color: rgb(93, 107, 98);">New prices wait in a queue until you approve them.</span></span></label>
+                <label data-dc-tpl="110" style="display: flex; align-items: flex-start; gap: 10px;"><input data-dc-tpl="111" id="st-hours" type="checkbox" style="width: 18px; height: 18px; margin-top: 1px; accent-color: rgb(1, 99, 50);"><span data-dc-tpl="112"><strong data-dc-tpl="113">Office hours only</strong><span data-dc-tpl="114" style="display: block; font-size: 12px; color: rgb(93, 107, 98);">Sign-in allowed Monday to Saturday, 9 am to 7 pm.</span></span></label>
+                <label data-dc-tpl="115" style="display: flex; align-items: flex-start; gap: 10px;"><input data-dc-tpl="116" id="st-expire" type="checkbox" style="width: 18px; height: 18px; margin-top: 1px; accent-color: rgb(1, 99, 50);"><span data-dc-tpl="117"><strong data-dc-tpl="118">Temporary access</strong><span data-dc-tpl="119" style="display: block; font-size: 12px; color: rgb(93, 107, 98);">Account switches off automatically after 30 days (for interns or contractors).</span></span></label>
+                <label data-dc-tpl="120" style="display: flex; align-items: flex-start; gap: 10px; color: rgb(93, 107, 98);"><input data-dc-tpl="121" id="st-2fa" type="checkbox" disabled="" checked="" style="width: 18px; height: 18px; margin-top: 1px; accent-color: rgb(1, 99, 50);"><span data-dc-tpl="122"><strong data-dc-tpl="123" style="color: rgb(19, 36, 26);">2-step login required</strong><span data-dc-tpl="124" style="display: block; font-size: 12px;">Always on for every staff account.</span></span></label>
+              </div>
+            </fieldset>
+
+            <label data-dc-tpl="125" for="st-msg" style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600;">Personal note in the email (optional)<textarea data-dc-tpl="126" id="st-msg" rows="2" placeholder="e.g. Welcome to the sales team!" style="padding: 10px 12px; border: 1px solid rgb(196, 209, 192); border-radius: 12px; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-weight: 400; resize: vertical;"></textarea></label>
+
+            <div data-dc-tpl="127" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+              <button data-dc-tpl="128" type="submit" style="height: 48px; padding: 0px 26px; border-radius: 999px; border: 0px; background: rgb(1, 99, 50); color: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 15px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Send invitation</span></button>
+              <button data-dc-tpl="129" type="button" style="height: 48px; padding: 0px 20px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">Clear</button>
+              <a data-dc-tpl="130" href="Admin-Signup.dc.html" style="font-size: 14px; font-weight: 600;">Preview the invite page they’ll see</a>
+            </div>
+          </form>
+        
+        
+      </section>
+
+      
+      <aside data-dc-tpl="141" style="flex: 1 1 300px; min-width: 0px; display: flex; flex-direction: column; gap: 18px;">
+        <section data-dc-tpl="142" style="padding: 22px; border-radius: 22px; background: linear-gradient(rgb(5, 17, 11) 0%, rgb(10, 46, 27) 60%, rgb(15, 90, 48) 100%); color: rgb(201, 219, 195);">
+          <p data-dc-tpl="143" style="margin: 0px; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(138, 190, 124);">Their menu will show</p>
+          <ul data-dc-tpl="144" style="margin: 14px 0px 0px; padding: 0px; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 14px;">
+            
+              <li data-dc-tpl="146" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 40px; padding: 0px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); color: rgb(255, 255, 255);"><span data-dc-tpl="147"><span class="sc-interp">Orders</span></span><span data-dc-tpl="148" style="font-size: 11px; font-weight: 700; color: rgb(138, 190, 124);"><span class="sc-interp">EDIT</span></span></li>
+            
+              <li data-dc-tpl="146" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 40px; padding: 0px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); color: rgb(255, 255, 255);"><span data-dc-tpl="147"><span class="sc-interp">Quotes &amp; leads</span></span><span data-dc-tpl="148" style="font-size: 11px; font-weight: 700; color: rgb(138, 190, 124);"><span class="sc-interp">EDIT</span></span></li>
+            
+              <li data-dc-tpl="146" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 40px; padding: 0px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); color: rgb(255, 255, 255);"><span data-dc-tpl="147"><span class="sc-interp">Customers</span></span><span data-dc-tpl="148" style="font-size: 11px; font-weight: 700; color: rgb(138, 190, 124);"><span class="sc-interp">EDIT</span></span></li>
+            
+              <li data-dc-tpl="146" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 40px; padding: 0px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); color: rgb(255, 255, 255);"><span data-dc-tpl="147"><span class="sc-interp">Products &amp; stock</span></span><span data-dc-tpl="148" style="font-size: 11px; font-weight: 700; color: rgb(138, 190, 124);"><span class="sc-interp">VIEW ONLY</span></span></li>
+            
+          </ul>
+          
+          <p data-dc-tpl="151" style="margin: 14px 0px 0px; font-size: 12px; color: rgba(255, 255, 255, 0.55); line-height: 1.5;">Hidden areas don’t appear in their menu, and opening them by address is refused.</p>
+        </section>
+        <section data-dc-tpl="152" style="padding: 22px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+          <h2 data-dc-tpl="153" style="margin: 0px; font-size: 17px; font-weight: 800; color: rgb(7, 22, 14);">Always Owner-only</h2>
+          <ul data-dc-tpl="154" style="margin: 10px 0px 0px; padding-left: 18px; font-size: 13px; color: rgb(74, 90, 80); line-height: 1.7;">
+            <li data-dc-tpl="155">Inviting, removing or changing staff</li>
+            <li data-dc-tpl="156">Payment and bank settings</li>
+            <li data-dc-tpl="157">Deleting orders or customers</li>
+            <li data-dc-tpl="158">Approving price changes</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    
+    <section data-dc-tpl="159" style="margin-top: 18px; padding: 26px; border-radius: 22px; background: rgb(255, 255, 255); border: 1px solid rgb(227, 235, 224);">
+      <div data-dc-tpl="160" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+        <div data-dc-tpl="161">
+          <h2 data-dc-tpl="162" style="margin: 0px; font-size: 20px; font-weight: 800; color: rgb(7, 22, 14);">Your team</h2>
+          <p data-dc-tpl="163" style="margin: 4px 0px 0px; font-size: 13px; color: rgb(93, 107, 98);">Edit access, resend an invite, suspend someone right away, or remove them.</p>
+        </div>
+        
+      </div>
+      <div data-dc-tpl="166" style="margin-top: 16px; overflow-x: auto;">
+        <table data-dc-tpl="167" style="width: 100%; min-width: 860px; border-collapse: collapse; font-size: 14px;">
+          <thead data-dc-tpl="168"><tr data-dc-tpl="169" style="text-align: left; color: rgb(93, 107, 98); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;"><th data-dc-tpl="170" style="padding: 8px 0px; font-weight: 600;">Person</th><th data-dc-tpl="171" style="padding: 8px; font-weight: 600;">Role</th><th data-dc-tpl="172" style="padding: 8px; font-weight: 600;">Status</th><th data-dc-tpl="173" style="padding: 8px; font-weight: 600;">2-step</th><th data-dc-tpl="174" style="padding: 8px; font-weight: 600;">Last sign-in</th><th data-dc-tpl="175" style="padding: 8px 0px 8px 8px; font-weight: 600; text-align: right;">Actions</th></tr></thead>
+          <tbody data-dc-tpl="176">
+            
+              <tr data-dc-tpl="178" style="border-top: 1px solid rgb(237, 241, 235);">
+                <td data-dc-tpl="179" style="padding: 12px 0px;"><span data-dc-tpl="180" style="display: flex; align-items: center; gap: 10px;"><span data-dc-tpl="181" style="flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: rgb(7, 22, 14); color: rgb(138, 190, 124); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;"><span class="sc-interp">O</span></span><span data-dc-tpl="182" style="display: flex; flex-direction: column;"><strong data-dc-tpl="183" style="color: rgb(7, 22, 14);"><span class="sc-interp">Owner</span></strong><span data-dc-tpl="184" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">owner@gcsho.com</span></span></span></span></td>
+                <td data-dc-tpl="185" style="padding: 12px 8px; color: rgb(52, 70, 59);"><span class="sc-interp">Owner</span></td>
+                <td data-dc-tpl="186" style="padding: 12px 8px;"><span data-dc-tpl="187" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(233, 246, 233); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="188" aria-hidden="true" style="color: rgb(12, 163, 12);"><span class="sc-interp">✓</span></span><span class="sc-interp">Active</span></span></td>
+                <td data-dc-tpl="189" style="padding: 12px 8px;"><span data-dc-tpl="190" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(233, 246, 233); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="191" aria-hidden="true" style="color: rgb(12, 163, 12);"><span class="sc-interp">✓</span></span><span class="sc-interp">On</span></span></td>
+                <td data-dc-tpl="192" style="padding: 12px 8px; color: rgb(93, 107, 98); font-size: 13px; white-space: nowrap;"><span class="sc-interp">Today, 09:12</span></td>
+                <td data-dc-tpl="193" style="padding: 12px 0px 12px 8px; text-align: right; white-space: nowrap;">
+                  <span data-dc-tpl="195" style="font-size: 12px; color: rgb(93, 107, 98);">Can’t be changed</span>
+                  
+                </td>
+              </tr>
+            
+              <tr data-dc-tpl="178" style="border-top: 1px solid rgb(237, 241, 235);">
+                <td data-dc-tpl="179" style="padding: 12px 0px;"><span data-dc-tpl="180" style="display: flex; align-items: center; gap: 10px;"><span data-dc-tpl="181" style="flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: rgb(7, 22, 14); color: rgb(138, 190, 124); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;"><span class="sc-interp">SA</span></span><span data-dc-tpl="182" style="display: flex; flex-direction: column;"><strong data-dc-tpl="183" style="color: rgb(7, 22, 14);"><span class="sc-interp">Sales Admin</span></strong><span data-dc-tpl="184" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">sales@gcsho.com</span></span></span></span></td>
+                <td data-dc-tpl="185" style="padding: 12px 8px; color: rgb(52, 70, 59);"><span class="sc-interp">Sales</span></td>
+                <td data-dc-tpl="186" style="padding: 12px 8px;"><span data-dc-tpl="187" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(233, 246, 233); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="188" aria-hidden="true" style="color: rgb(12, 163, 12);"><span class="sc-interp">✓</span></span><span class="sc-interp">Active</span></span></td>
+                <td data-dc-tpl="189" style="padding: 12px 8px;"><span data-dc-tpl="190" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(233, 246, 233); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="191" aria-hidden="true" style="color: rgb(12, 163, 12);"><span class="sc-interp">✓</span></span><span class="sc-interp">On</span></span></td>
+                <td data-dc-tpl="192" style="padding: 12px 8px; color: rgb(93, 107, 98); font-size: 13px; white-space: nowrap;"><span class="sc-interp">Today, 10:44</span></td>
+                <td data-dc-tpl="193" style="padding: 12px 0px 12px 8px; text-align: right; white-space: nowrap;">
+                  
+                  
+                    <span data-dc-tpl="197" style="display: inline-flex; gap: 6px;">
+                      <a data-dc-tpl="198" href="#invite" style="display: inline-flex; align-items: center; height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); color: rgb(19, 36, 26); font-size: 12px; font-weight: 700;">Edit access</a>
+                      
+                      <button data-dc-tpl="202" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Suspend</span></button>
+                      <button data-dc-tpl="203" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(240, 196, 196); background: rgb(255, 255, 255); color: rgb(161, 44, 44); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Remove</span></button>
+                    </span>
+                  
+                </td>
+              </tr>
+            
+              <tr data-dc-tpl="178" style="border-top: 1px solid rgb(237, 241, 235);">
+                <td data-dc-tpl="179" style="padding: 12px 0px;"><span data-dc-tpl="180" style="display: flex; align-items: center; gap: 10px;"><span data-dc-tpl="181" style="flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: rgb(7, 22, 14); color: rgb(138, 190, 124); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;"><span class="sc-interp">ST</span></span><span data-dc-tpl="182" style="display: flex; flex-direction: column;"><strong data-dc-tpl="183" style="color: rgb(7, 22, 14);"><span class="sc-interp">Service team</span></strong><span data-dc-tpl="184" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">service@gcsho.com</span></span></span></span></td>
+                <td data-dc-tpl="185" style="padding: 12px 8px; color: rgb(52, 70, 59);"><span class="sc-interp">Service technician</span></td>
+                <td data-dc-tpl="186" style="padding: 12px 8px;"><span data-dc-tpl="187" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(233, 246, 233); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="188" aria-hidden="true" style="color: rgb(12, 163, 12);"><span class="sc-interp">✓</span></span><span class="sc-interp">Active</span></span></td>
+                <td data-dc-tpl="189" style="padding: 12px 8px;"><span data-dc-tpl="190" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(251, 233, 225); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="191" aria-hidden="true" style="color: rgb(194, 90, 48);"><span class="sc-interp">!</span></span><span class="sc-interp">Not set up</span></span></td>
+                <td data-dc-tpl="192" style="padding: 12px 8px; color: rgb(93, 107, 98); font-size: 13px; white-space: nowrap;"><span class="sc-interp">Yesterday, 15:12</span></td>
+                <td data-dc-tpl="193" style="padding: 12px 0px 12px 8px; text-align: right; white-space: nowrap;">
+                  
+                  
+                    <span data-dc-tpl="197" style="display: inline-flex; gap: 6px;">
+                      <a data-dc-tpl="198" href="#invite" style="display: inline-flex; align-items: center; height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); color: rgb(19, 36, 26); font-size: 12px; font-weight: 700;">Edit access</a>
+                      
+                      <button data-dc-tpl="202" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Suspend</span></button>
+                      <button data-dc-tpl="203" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(240, 196, 196); background: rgb(255, 255, 255); color: rgb(161, 44, 44); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Remove</span></button>
+                    </span>
+                  
+                </td>
+              </tr>
+            
+              <tr data-dc-tpl="178" style="border-top: 1px solid rgb(237, 241, 235);">
+                <td data-dc-tpl="179" style="padding: 12px 0px;"><span data-dc-tpl="180" style="display: flex; align-items: center; gap: 10px;"><span data-dc-tpl="181" style="flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: rgb(7, 22, 14); color: rgb(138, 190, 124); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;"><span class="sc-interp">A</span></span><span data-dc-tpl="182" style="display: flex; flex-direction: column;"><strong data-dc-tpl="183" style="color: rgb(7, 22, 14);"><span class="sc-interp">Accounts</span></strong><span data-dc-tpl="184" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">accounts@gcsho.com</span></span></span></span></td>
+                <td data-dc-tpl="185" style="padding: 12px 8px; color: rgb(52, 70, 59);"><span class="sc-interp">Accounts</span></td>
+                <td data-dc-tpl="186" style="padding: 12px 8px;"><span data-dc-tpl="187" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(251, 233, 225); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="188" aria-hidden="true" style="color: rgb(194, 90, 48);"><span class="sc-interp">⏸</span></span><span class="sc-interp">Suspended</span></span></td>
+                <td data-dc-tpl="189" style="padding: 12px 8px;"><span data-dc-tpl="190" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(233, 246, 233); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="191" aria-hidden="true" style="color: rgb(12, 163, 12);"><span class="sc-interp">✓</span></span><span class="sc-interp">On</span></span></td>
+                <td data-dc-tpl="192" style="padding: 12px 8px; color: rgb(93, 107, 98); font-size: 13px; white-space: nowrap;"><span class="sc-interp">29 Oct, 16:30</span></td>
+                <td data-dc-tpl="193" style="padding: 12px 0px 12px 8px; text-align: right; white-space: nowrap;">
+                  
+                  
+                    <span data-dc-tpl="197" style="display: inline-flex; gap: 6px;">
+                      <a data-dc-tpl="198" href="#invite" style="display: inline-flex; align-items: center; height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); color: rgb(19, 36, 26); font-size: 12px; font-weight: 700;">Edit access</a>
+                      
+                      <button data-dc-tpl="202" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Reactivate</span></button>
+                      <button data-dc-tpl="203" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(240, 196, 196); background: rgb(255, 255, 255); color: rgb(161, 44, 44); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Remove</span></button>
+                    </span>
+                  
+                </td>
+              </tr>
+            
+              <tr data-dc-tpl="178" style="border-top: 1px solid rgb(237, 241, 235);">
+                <td data-dc-tpl="179" style="padding: 12px 0px;"><span data-dc-tpl="180" style="display: flex; align-items: center; gap: 10px;"><span data-dc-tpl="181" style="flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: rgb(7, 22, 14); color: rgb(138, 190, 124); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;"><span class="sc-interp">BA</span></span><span data-dc-tpl="182" style="display: flex; flex-direction: column;"><strong data-dc-tpl="183" style="color: rgb(7, 22, 14);"><span class="sc-interp">Bilal Ahmed</span></strong><span data-dc-tpl="184" style="font-size: 12px; color: rgb(93, 107, 98);"><span class="sc-interp">bilal@gcsho.com</span></span></span></span></td>
+                <td data-dc-tpl="185" style="padding: 12px 8px; color: rgb(52, 70, 59);"><span class="sc-interp">Shop manager</span></td>
+                <td data-dc-tpl="186" style="padding: 12px 8px;"><span data-dc-tpl="187" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(253, 243, 220); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="188" aria-hidden="true" style="color: rgb(176, 122, 0);"><span class="sc-interp">◷</span></span><span class="sc-interp">Invited · waiting</span></span></td>
+                <td data-dc-tpl="189" style="padding: 12px 8px;"><span data-dc-tpl="190" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgb(251, 233, 225); font-size: 12px; font-weight: 600; white-space: nowrap;"><span data-dc-tpl="191" aria-hidden="true" style="color: rgb(194, 90, 48);"><span class="sc-interp">!</span></span><span class="sc-interp">After sign-up</span></span></td>
+                <td data-dc-tpl="192" style="padding: 12px 8px; color: rgb(93, 107, 98); font-size: 13px; white-space: nowrap;"><span class="sc-interp">Invite sent 1 Nov</span></td>
+                <td data-dc-tpl="193" style="padding: 12px 0px 12px 8px; text-align: right; white-space: nowrap;">
+                  
+                  
+                    <span data-dc-tpl="197" style="display: inline-flex; gap: 6px;">
+                      <a data-dc-tpl="198" href="#invite" style="display: inline-flex; align-items: center; height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); color: rgb(19, 36, 26); font-size: 12px; font-weight: 700;">Edit access</a>
+                      <button data-dc-tpl="200" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(211, 221, 208); background: rgb(255, 255, 255); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;">Resend</button>
+                      
+                      <button data-dc-tpl="203" type="button" style="height: 34px; padding: 0px 12px; border-radius: 999px; border: 1px solid rgb(240, 196, 196); background: rgb(255, 255, 255); color: rgb(161, 44, 44); font-style: inherit; font-variant: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-language-override: inherit; font-size: 12px; font-weight: 700; cursor: pointer;"><span class="sc-interp">Cancel invite</span></button>
+                    </span>
+                  
+                </td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+      
+    </section>
+  </main></div></div></div>
+
+
+
+</body></html>
